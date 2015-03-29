@@ -9,11 +9,22 @@
     {
         private const string BaseAddress = "https://test.artportalen.se/";
 
-        public string AuthToken { get; set; }
+        private readonly HttpClient httpClient;
 
-        public string AccessKey { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="accessKey">All requests need an Access Key</param>
+        /// <param name="httpMessageHandler">Used in Unit Tests to check request and response values</param>
+        public Ap2Client(string accessKey, HttpMessageHandler httpMessageHandler = null)
+        {
+            this.AccessKey = accessKey;
+            this.httpClient = this.CreateClient(httpMessageHandler);
+        }
 
-        public HttpMessageHandler HttpMessageHandler { get; set; }
+        public string AuthToken { get; private set; }
+
+        public string AccessKey { get; private set; }
 
         public void Authorize(string user, string password)
         {
@@ -21,8 +32,8 @@
 
             this.AddBasicAuthorizationHeader(request, user, password);
 
-            var response = this.Execute(request);
-            this.AuthToken = response.Content.ReadAsStringAsync().Result;
+            var response = this.Execute<string>(request);
+            this.AuthToken = response.Value;
         }
 
         public string Test()
@@ -30,36 +41,21 @@
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/test");
             this.AddSessionAuthorizationHeader(request);
 
-            var response = this.Execute(request);
-            return response.Content != null ? response.Content.ReadAsStringAsync().Result : string.Empty;
+            var response = this.Execute<string>(request);
+            return response.Value;
         }
 
         public string TestPublic()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/testvalues");
             
-            var response = this.Execute(request);
-            return response.Content != null ? response.Content.ReadAsStringAsync().Result : string.Empty;
+            var response = this.Execute<string>(request);
+            return response.Value;
         }
 
-        private HttpResponseMessage Execute(HttpRequestMessage request)
+        private ResponseWrapper<T> Execute<T>(HttpRequestMessage request) where T : class
         {
-            this.AddAccessKeyHeader(request);
-
-            using (var httpClient = this.CreateClient())
-            {
-                return httpClient.SendAsync(request).Result;
-            }
-        }
-
-        private void AddAccessKeyHeader(HttpRequestMessage request)
-        {
-            if (string.IsNullOrEmpty(this.AccessKey))
-            {
-                throw new ArgumentException("Access key is not set");
-            }
-
-            request.Headers.Add("access-key", this.AccessKey);
+            return new ResponseWrapper<T>(this.httpClient.SendAsync(request).Result);
         }
 
         private void AddBasicAuthorizationHeader(HttpRequestMessage request, string user, string password)
@@ -79,14 +75,21 @@
             request.Headers.Authorization = new AuthenticationHeaderValue("Session", this.AuthToken);
         }
 
-        private HttpClient CreateClient()
+        private HttpClient CreateClient(HttpMessageHandler httpMessageHandler = null)
         {
-            if (this.HttpMessageHandler != null)
-            {
-                return new HttpClient(this.HttpMessageHandler) { BaseAddress = new Uri(BaseAddress) };
-            }
+            var client = httpMessageHandler != null ? new HttpClient(httpMessageHandler) : new HttpClient();
 
-            return new HttpClient { BaseAddress = new Uri(BaseAddress) };
+            client.BaseAddress = new Uri(BaseAddress);
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if (string.IsNullOrEmpty(this.AccessKey))
+            {
+                throw new ArgumentException("Access key is not set");
+            }
+            
+            client.DefaultRequestHeaders.Add("access-key", this.AccessKey);
+
+            return client;
         }
     }
 }

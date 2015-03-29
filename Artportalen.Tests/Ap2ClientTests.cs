@@ -1,6 +1,7 @@
 ﻿namespace Artportalen.Tests
 {
     using System;
+    using System.Net.Http.Headers;
     using System.Text;
 
     using Artportalen.Tests.Fakes;
@@ -17,11 +18,7 @@
         [SetUp]
         public void Setup()
         {
-            this.ap2Client = new Ap2Client
-                                          {
-                                              AccessKey = "12345",
-                                              HttpMessageHandler = this.httpMessageHandler,
-                                          };
+            this.ap2Client = new Ap2Client("12345", this.httpMessageHandler);
         }
 
         [Test]
@@ -45,6 +42,14 @@
 
             Assert.NotNull(this.httpMessageHandler.Request.Headers.Authorization);
             Assert.AreEqual("Session", this.httpMessageHandler.Request.Headers.Authorization.Scheme);
+        }
+
+        [Test]
+        public void TestPublic_VerifyAcceptJson()
+        {
+            this.ap2Client.TestPublic();
+
+            Assert.True(this.httpMessageHandler.Request.Headers.Accept.Contains(new MediaTypeWithQualityHeaderValue("application/json")));
         }
 
         [Test]
