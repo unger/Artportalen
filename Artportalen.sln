@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artportalen", "Artportalen\Artportalen.csproj", "{6F78A318-4226-459C-957C-E9FFADF02BBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artportalen.Tests", "Artportalen.Tests\Artportalen.Tests.csproj", "{EAA23325-5726-4746-B5D5-8BCA498AFCCB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6F78A318-4226-459C-957C-E9FFADF02BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F78A318-4226-459C-957C-E9FFADF02BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F78A318-4226-459C-957C-E9FFADF02BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F78A318-4226-459C-957C-E9FFADF02BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
