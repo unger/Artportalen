@@ -1,6 +1,8 @@
-﻿namespace Artportalen
+﻿namespace Artportalen.Response
 {
     using System.Net.Http;
+
+    using fastJSON;
 
     public class ResponseWrapper<T> where T : class
     {
@@ -16,7 +18,18 @@
 
         private T ParseValue(HttpResponseMessage response)
         {
-            return response.Content != null ? response.Content.ReadAsStringAsync().Result as T : default(T);
+            var content = response.Content != null ? response.Content.ReadAsStringAsync().Result : null;
+            if (content != null)
+            {
+                if (typeof(T) == typeof(string))
+                {
+                    return content as T;
+                }
+
+                return JSON.ToObject<T>(content);
+            }
+
+            return default(T);
         }
     }
 }

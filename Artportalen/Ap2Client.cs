@@ -5,11 +5,15 @@
     using System.Net.Http.Headers;
     using System.Text;
 
+    using Artportalen.Response;
+
     public class Ap2Client
     {
         private const string BaseAddress = "https://test.artportalen.se/";
 
         private readonly HttpClient httpClient;
+
+        private string basicAuthorizationParameter;
 
         /// <summary>
         /// 
@@ -28,12 +32,24 @@
 
         public void Authorize(string user, string password)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
+            this.basicAuthorizationParameter = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
+            this.AuthorizeRequest(this.basicAuthorizationParameter);
+        }
 
-            this.AddBasicAuthorizationHeader(request, user, password);
+        public Sighting Sighting(long id)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sighting/{0}", id));
 
-            var response = this.Execute<string>(request);
-            this.AuthToken = response.Value;
+            return this.Execute<Sighting>(request).Value;
+        }
+
+        public SpeciesGroup[] SpeciesGroups()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/speciesgroups");
+
+            var response = this.Execute<BaseCollection<SpeciesGroup>>(request).Value;
+
+            return response != null ? response.Data : new SpeciesGroup[0];
         }
 
         public string Test()
@@ -41,28 +57,19 @@
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/test");
             this.AddSessionAuthorizationHeader(request);
 
-            var response = this.Execute<string>(request);
-            return response.Value;
+            return this.Execute<string>(request).Value;
         }
 
         public string TestPublic()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/testvalues");
-            
-            var response = this.Execute<string>(request);
-            return response.Value;
+
+            return this.Execute<string>(request).Value;
         }
 
         private ResponseWrapper<T> Execute<T>(HttpRequestMessage request) where T : class
         {
             return new ResponseWrapper<T>(this.httpClient.SendAsync(request).Result);
-        }
-
-        private void AddBasicAuthorizationHeader(HttpRequestMessage request, string user, string password)
-        {
-            var basicAuth = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
-
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicAuth);
         }
 
         private void AddSessionAuthorizationHeader(HttpRequestMessage request)
@@ -90,6 +97,16 @@
             client.DefaultRequestHeaders.Add("access-key", this.AccessKey);
 
             return client;
+        }
+
+        private void AuthorizeRequest(string parameter)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", parameter);
+
+            var response = this.Execute<string>(request);
+            this.AuthToken = response.Value;
         }
     }
 }

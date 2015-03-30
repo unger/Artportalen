@@ -4,6 +4,7 @@
     using System.Net.Http.Headers;
     using System.Text;
 
+    using Artportalen.Response;
     using Artportalen.Tests.Fakes;
 
     using NUnit.Framework;
@@ -31,6 +32,14 @@
 
             var unencoded = Encoding.UTF8.GetString(Convert.FromBase64String(this.httpMessageHandler.Request.Headers.Authorization.Parameter));
             Assert.AreEqual("test:test", unencoded);
+        }
+
+        [Test]
+        public void Sighting_ById_ShouldReturnSighting()
+        {
+            var result = this.ap2Client.Sighting(1);
+
+            Assert.IsInstanceOf<Sighting>(result);
         }
 
         [Test]
