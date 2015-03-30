@@ -4,6 +4,7 @@
     using System.Net.Http.Headers;
     using System.Text;
 
+    using Artportalen.Request;
     using Artportalen.Response;
     using Artportalen.Tests.Fakes;
 
@@ -40,6 +41,30 @@
             var result = this.ap2Client.Sighting(1);
 
             Assert.IsInstanceOf<Sighting>(result);
+        }
+
+        [Test]
+        public void Sightings_VerifySerializeOneParameter()
+        {
+            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1 });
+
+            Assert.AreEqual("?TaxonId=1", this.httpMessageHandler.Request.RequestUri.Query);
+        }
+
+        [Test]
+        public void Sightings_VerifySerializeTwoParameters()
+        {
+            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2 });
+
+            Assert.AreEqual("?TaxonId=1&PageNumber=2", this.httpMessageHandler.Request.RequestUri.Query);
+        }
+
+        [Test]
+        public void Sightings_VerifySerializeFourParameters()
+        {
+            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2, SortField = "StartDate", SortOrder = "Descending" });
+
+            Assert.AreEqual("?TaxonId=1&PageNumber=2&SortField=StartDate&SortOrder=Descending", this.httpMessageHandler.Request.RequestUri.Query);
         }
 
         [Test]

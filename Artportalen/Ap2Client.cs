@@ -1,10 +1,13 @@
 ﻿namespace Artportalen
 {
     using System;
+    using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
+    using System.Web;
 
+    using Artportalen.Request;
     using Artportalen.Response;
 
     public class Ap2Client
@@ -41,6 +44,14 @@
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sighting/{0}", id));
 
             return this.Execute<Sighting>(request).Value;
+        }
+
+        public SightingsCollection Sightings(SightingsQuery search)
+        {
+            string queryString = this.GetQueryString(search);
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/search?{0}", queryString));
+
+            return this.Execute<SightingsCollection>(request).Value;
         }
 
         public SpeciesGroup[] SpeciesGroups()
@@ -107,6 +118,15 @@
 
             var response = this.Execute<string>(request);
             this.AuthToken = response.Value;
+        }
+
+        private string GetQueryString(object obj)
+        {
+            var properties = from p in obj.GetType().GetProperties()
+                             where p.GetValue(obj, null) != null
+                             select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
+
+            return string.Join("&", properties.ToArray());
         }
     }
 }
