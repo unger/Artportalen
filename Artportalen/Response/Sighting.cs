@@ -4,7 +4,7 @@
 
     public class Sighting
     {
-        public int SightingId { get; set; }
+        public long SightingId { get; set; }
 
         public string ScientificName { get; set; }
 

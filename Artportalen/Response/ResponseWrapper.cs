@@ -1,5 +1,7 @@
 ﻿namespace Artportalen.Response
 {
+    using System.Collections.Generic;
+    using System.Data.Common;
     using System.Net.Http;
 
     using fastJSON;
@@ -24,6 +26,19 @@
                 if (typeof(T) == typeof(string))
                 {
                     return content as T;
+                }
+                
+                if (typeof(T).IsArray)
+                {
+                    var result = JSON.Parse(content) as List<object>;
+                    if (result != null)
+                    {
+                        if (typeof(T).GetElementType() == typeof(string))
+                        {
+                            return result.ConvertAll(o => o.ToString()).ToArray() as T;
+                        }
+                    }
+                    
                 }
 
                 return JSON.ToObject<T>(content);

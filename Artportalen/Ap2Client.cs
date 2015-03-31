@@ -35,13 +35,29 @@
 
         public void Authorize(string user, string password)
         {
-            this.basicAuthorizationParameter = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
-            this.AuthorizeRequest(this.basicAuthorizationParameter);
+            var basicAuthToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
+            this.Authorize(basicAuthToken);
+        }
+
+        public void Authorize(string basicAuthToken)
+        {
+            this.basicAuthorizationParameter = basicAuthToken;
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicAuthToken);
+
+            var response = this.Execute<AuthorizeTokenResponse>(request);
+
+            if (response.Value != null)
+            {
+                this.AuthToken = response.Value.access_token;
+            }
         }
 
         public Sighting Sighting(long id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sighting/{0}", id));
+            this.AddSessionAuthorizationHeader(request);
 
             return this.Execute<Sighting>(request).Value;
         }
@@ -50,6 +66,7 @@
         {
             string queryString = this.GetQueryString(search);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/search?{0}", queryString));
+            this.AddSessionAuthorizationHeader(request);
 
             return this.Execute<SightingsCollection>(request).Value;
         }
@@ -71,11 +88,11 @@
             return this.Execute<string>(request).Value;
         }
 
-        public string TestPublic()
+        public string[] TestPublic()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/testvalues");
 
-            return this.Execute<string>(request).Value;
+            return this.Execute<string[]>(request).Value;
         }
 
         private ResponseWrapper<T> Execute<T>(HttpRequestMessage request) where T : class
@@ -108,16 +125,6 @@
             client.DefaultRequestHeaders.Add("access-key", this.AccessKey);
 
             return client;
-        }
-
-        private void AuthorizeRequest(string parameter)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
-
-            request.Headers.Authorization = new AuthenticationHeaderValue("Basic", parameter);
-
-            var response = this.Execute<string>(request);
-            this.AuthToken = response.Value;
         }
 
         private string GetQueryString(object obj)

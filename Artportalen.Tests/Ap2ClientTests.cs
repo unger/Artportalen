@@ -38,6 +38,8 @@
         [Test]
         public void Sighting_ById_ShouldReturnSighting()
         {
+            this.ap2Client.Authorize("test", "test");
+
             var result = this.ap2Client.Sighting(1);
 
             Assert.IsInstanceOf<Sighting>(result);
@@ -46,6 +48,8 @@
         [Test]
         public void Sightings_VerifySerializeOneParameter()
         {
+            this.ap2Client.Authorize("test", "test");
+
             var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1 });
 
             Assert.AreEqual("?TaxonId=1", this.httpMessageHandler.Request.RequestUri.Query);
@@ -54,6 +58,8 @@
         [Test]
         public void Sightings_VerifySerializeTwoParameters()
         {
+            this.ap2Client.Authorize("test", "test");
+
             var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2 });
 
             Assert.AreEqual("?TaxonId=1&PageNumber=2", this.httpMessageHandler.Request.RequestUri.Query);
@@ -62,6 +68,8 @@
         [Test]
         public void Sightings_VerifySerializeFourParameters()
         {
+            this.ap2Client.Authorize("test", "test");
+
             var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2, SortField = "StartDate", SortOrder = "Descending" });
 
             Assert.AreEqual("?TaxonId=1&PageNumber=2&SortField=StartDate&SortOrder=Descending", this.httpMessageHandler.Request.RequestUri.Query);

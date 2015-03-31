@@ -48,6 +48,7 @@
     <Compile Include="Ap2Client.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\SightingsQuery.cs" />
+    <Compile Include="Response\AuthorizeTokenResponse.cs" />
     <Compile Include="Response\SightingsCollection.cs" />
     <Compile Include="Response\Pager.cs" />
     <Compile Include="Response\BaseCollection.cs" />
