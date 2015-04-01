@@ -87,6 +87,16 @@
         }
 
         [Test]
+        public void Test_VerifyStringArrayContent()
+        {
+            this.ap2Client.Authorize("test", "test");
+
+            var result = this.ap2Client.Test();
+
+            Assert.AreEqual(new[] { "User:Magnus Unger" }, result);
+        }
+
+        [Test]
         public void TestPublic_VerifyAcceptJson()
         {
             this.ap2Client.TestPublic();
@@ -100,6 +110,14 @@
             this.ap2Client.TestPublic();
 
             Assert.True(this.httpMessageHandler.Request.Headers.Contains("access-key"));
+        }
+
+        [Test]
+        public void TestPublic_VerifyContentStringArray()
+        {
+            var result = this.ap2Client.TestPublic();
+
+            Assert.AreEqual(new[] { "value1", "value2" }, result);
         }
     }
 }

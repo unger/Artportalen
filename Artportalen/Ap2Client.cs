@@ -1,6 +1,7 @@
 ﻿namespace Artportalen
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
@@ -54,6 +55,15 @@
             }
         }
 
+        public CoordinateSystem[] CoordinateSystems()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/coordinatesystems");
+
+            var response = this.Execute<BaseCollection<CoordinateSystem>>(request).Value;
+
+            return response != null ? response.Data : new CoordinateSystem[0];
+        }
+
         public Sighting Sighting(long id)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sighting/{0}", id));
@@ -71,6 +81,21 @@
             return this.Execute<SightingsCollection>(request).Value;
         }
 
+        public Site[] Sites(int coordSysId, string east, string north, int radius, int count, int? speciesGroupId = null)
+        {
+            string queryString = this.GetQueryString(new
+                                                         {
+                                                             speciesGroupId,
+                                                             count
+                                                         });
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/withinradius/coordsystem/{0}/east/{1}/north/{2}/radius/{3}?{4}", coordSysId, east, north, radius, queryString));
+            this.AddSessionAuthorizationHeader(request);
+
+            var response = this.Execute<BaseCollection<Site>>(request).Value;
+
+            return response != null ? response.Data : new Site[0];
+        }
+
         public SpeciesGroup[] SpeciesGroups()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/speciesgroups");
@@ -80,12 +105,12 @@
             return response != null ? response.Data : new SpeciesGroup[0];
         }
 
-        public string Test()
+        public string[] Test()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/test");
             this.AddSessionAuthorizationHeader(request);
 
-            return this.Execute<string>(request).Value;
+            return this.Execute<string[]>(request).Value;
         }
 
         public string[] TestPublic()

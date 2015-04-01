@@ -28,17 +28,14 @@
                     return content as T;
                 }
                 
-                if (typeof(T).IsArray)
+                // special handling for string[]
+                if (typeof(T).IsArray && typeof(T).GetElementType() == typeof(string))
                 {
                     var result = JSON.Parse(content) as List<object>;
                     if (result != null)
                     {
-                        if (typeof(T).GetElementType() == typeof(string))
-                        {
-                            return result.ConvertAll(o => o.ToString()).ToArray() as T;
-                        }
+                        return result.ConvertAll(o => o.ToString()).ToArray() as T;
                     }
-                    
                 }
 
                 return JSON.ToObject<T>(content);
