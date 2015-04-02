@@ -49,7 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\SightingsQuery.cs" />
     <Compile Include="Response\Area.cs" />
-    <Compile Include="Response\AuthorizeTokenResponse.cs" />
+    <Compile Include="Response\AuthorizeToken.cs" />
     <Compile Include="Response\Site.cs" />
     <Compile Include="Response\CoordinateSystem.cs" />
     <Compile Include="Response\SightingsCollection.cs" />

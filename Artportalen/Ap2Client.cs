@@ -7,6 +7,7 @@
     using System.Net.Http.Headers;
     using System.Text;
     using System.Web;
+    using System.Web.Caching;
 
     using Artportalen.Request;
     using Artportalen.Response;
@@ -30,7 +31,24 @@
             this.httpClient = this.CreateClient(httpMessageHandler);
         }
 
-        public string AuthToken { get; private set; }
+        public AuthorizeToken AuthToken
+        {
+            get
+            {
+                var token = HttpRuntime.Cache["AuthToken"] as AuthorizeToken;
+                if (token != null)
+                {
+                    return token;
+                }
+
+                return new AuthorizeToken();
+            }
+
+            private set
+            {
+                HttpRuntime.Cache["AuthToken"] = value;
+            }
+        }
 
         public string AccessKey { get; private set; }
 
@@ -42,16 +60,21 @@
 
         public void Authorize(string basicAuthToken)
         {
+            if (this.AuthToken.IsValid)
+            {
+                return;
+            }
+
             this.basicAuthorizationParameter = basicAuthToken;
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicAuthToken);
 
-            var response = this.Execute<AuthorizeTokenResponse>(request);
+            var response = this.Execute<AuthorizeToken>(request);
 
             if (response.Value != null)
             {
-                this.AuthToken = response.Value.access_token;
+                this.AuthToken = response.Value;
             }
         }
 
@@ -127,12 +150,12 @@
 
         private void AddSessionAuthorizationHeader(HttpRequestMessage request)
         {
-            if (string.IsNullOrEmpty(this.AuthToken))
+            if (string.IsNullOrEmpty(this.AuthToken.access_token))
             {
                 throw new ArgumentException("Authorization needed AuthToken need to be set, call Authorize method to authenticate");
             }
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Session", this.AuthToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Session", this.AuthToken.access_token);
         }
 
         private HttpClient CreateClient(HttpMessageHandler httpMessageHandler = null)
