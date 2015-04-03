@@ -1,5 +1,6 @@
 ﻿namespace Artportalen.Response
 {
+    using System;
     using System.Collections.Generic;
     using System.Data.Common;
     using System.Net.Http;
@@ -27,19 +28,26 @@
                 {
                     return content as T;
                 }
-                
-                // special handling for string[]
-                if (typeof(T).IsArray && typeof(T).GetElementType() == typeof(string))
-                {
-                    var result = JSON.Parse(content) as List<object>;
-                    if (result != null)
-                    {
-                        return result.ConvertAll(o => o.ToString()).ToArray() as T;
-                    }
-                }
 
-                return JSON.ToObject<T>(content);
-            }
+                try
+                {
+                    // special handling for string[]
+                    if (typeof(T).IsArray && typeof(T).GetElementType() == typeof(string))
+                    {
+                        var result = JSON.Parse(content) as List<object>;
+                        if (result != null)
+                        {
+                            return result.ConvertAll(o => o.ToString()).ToArray() as T;
+                        }
+                    }
+
+                    return JSON.ToObject<T>(content);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(content);
+                }
+             }
 
             return default(T);
         }

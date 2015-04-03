@@ -31,25 +31,6 @@
             this.httpClient = this.CreateClient(httpMessageHandler);
         }
 
-        public AuthorizeToken AuthToken
-        {
-            get
-            {
-                var token = HttpRuntime.Cache["AuthToken"] as AuthorizeToken;
-                if (token != null)
-                {
-                    return token;
-                }
-
-                return new AuthorizeToken();
-            }
-
-            private set
-            {
-                HttpRuntime.Cache["AuthToken"] = value;
-            }
-        }
-
         public string AccessKey { get; private set; }
 
         public void Authorize(string user, string password)
@@ -60,12 +41,20 @@
 
         public void Authorize(string basicAuthToken)
         {
-            if (this.AuthToken.IsValid)
+            this.basicAuthorizationParameter = basicAuthToken;
+
+            var userName = this.GetUserName(basicAuthToken);
+            var authToken = this.GetAuthToken(userName);
+            if (!string.IsNullOrEmpty(authToken.access_token))
             {
                 return;
             }
 
-            this.basicAuthorizationParameter = basicAuthToken;
+            if (authToken.IsValid)
+            {
+                //return;
+            }
+
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicAuthToken);
@@ -74,7 +63,7 @@
 
             if (response.Value != null)
             {
-                this.AuthToken = response.Value;
+                this.SetAuthToken(response.Value, userName);
             }
         }
 
@@ -89,7 +78,7 @@
 
         public Sighting Sighting(long id)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sighting/{0}", id));
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/{0}", id));
             this.AddSessionAuthorizationHeader(request);
 
             return this.Execute<Sighting>(request).Value;
@@ -128,6 +117,14 @@
             return response != null ? response.Data : new SpeciesGroup[0];
         }
 
+        public Taxon Taxon(int taxonId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/taxon/{0}", taxonId));
+            this.AddSessionAuthorizationHeader(request);
+
+            return this.Execute<Taxon>(request).Value;
+        }
+
         public string[] Test()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/test");
@@ -150,12 +147,15 @@
 
         private void AddSessionAuthorizationHeader(HttpRequestMessage request)
         {
-            if (string.IsNullOrEmpty(this.AuthToken.access_token))
+            var userName = this.GetUserName(this.basicAuthorizationParameter);
+            var authToken = this.GetAuthToken(userName);
+
+            if (string.IsNullOrEmpty(authToken.access_token))
             {
                 throw new ArgumentException("Authorization needed AuthToken need to be set, call Authorize method to authenticate");
             }
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Session", this.AuthToken.access_token);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Session", authToken.access_token);
         }
 
         private HttpClient CreateClient(HttpMessageHandler httpMessageHandler = null)
@@ -182,6 +182,34 @@
                              select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
             return string.Join("&", properties.ToArray());
+        }
+
+        private AuthorizeToken GetAuthToken(string userName)
+        {
+            var token = HttpRuntime.Cache["AuthToken_" + userName] as AuthorizeToken;
+            if (token != null)
+            {
+                return token;
+            }
+
+            return new AuthorizeToken();
+        }
+
+        private void SetAuthToken(AuthorizeToken token, string userName)
+        {
+            HttpRuntime.Cache["AuthToken_" + userName] = token;
+        }
+
+        private string GetUserName(string basicAuthToken)
+        {
+            if (string.IsNullOrEmpty(basicAuthToken))
+            {
+                return "Anonymous";
+            }
+
+            var unencoded = Encoding.UTF8.GetString(Convert.FromBase64String(basicAuthToken));
+            var parts = unencoded.Split(new[] { ':' });
+            return parts[0];
         }
     }
 }

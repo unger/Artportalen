@@ -34,7 +34,7 @@
                                                         ""access_token"": ""eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzZXNzaW9uIGlzc3VlciIsImF1ZCI6Imh0dHA6Ly9zZXNzaW9uLnR0IiwibmJmIjoxNDI3ODMwMjI4LCJleHAiOjE0Mjc4NjYyMjgsInVuaXF1ZV9uYW1lIjoidW5nZXIiLCJhdXRobWV0aG9kIjoiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2F1dGhlbnRpY2F0aW9ubWV0aG9kL3Bhc3N3b3JkIiwiYXV0aF90aW1lIjoiMjAxNS0wMy0zMVQxOTozMDoyOC41NjZaIiwicGFzc3dvcmQiOiJTbmFydDQ1MCIsImh0dHA6Ly9zY2hlbWFzLmFydHBvcnRhbGVuLnNlL3dzLzIwMTMvMTEvaWRlbnRpdHkvY2xhaW1zL3VzZXJpZCI6IjIwNjQ5IiwiaHR0cDovL3NjaGVtYXMuYXJ0cG9ydGFsZW4uc2Uvd3MvMjAxMy8xMS9pZGVudGl0eS9jbGFpbXMvYXBwbGljYXRpb25pZCI6IjgiLCJodHRwOi8vc2NoZW1hcy5hcnRwb3J0YWxlbi5zZS93cy8yMDEzLzExL2lkZW50aXR5L2NsYWltcy9hcHBsaWNhdGlvbm5hbWUiOiJLdXN0b2JzYXIiLCJodHRwOi8vc2NoZW1hcy5hcnRwb3J0YWxlbi5zZS93cy8yMDEzLzExL2lkZW50aXR5L2NsYWltcy9jb3Jzb3JpZ2luIjoid3d3Lmt1c3RvYnNhci5zZSIsImh0dHA6Ly9zY2hlbWFzLmFydHBvcnRhbGVuLnNlL3dzLzIwMTMvMTEvaWRlbnRpdHkvY2xhaW1zL2FwcGxpY2F0aW9ua2V5IjoiNjg1NTM3OTNkNDIzNDA0OGE5MDA3MGQyMGQ3MmYxMjIifQ.9RXNWt_87_UFxIPhnaIKn9m8oXSVQ-b4p1_axAeGBT8"",  
                                                         ""expires_in"": 36000.0}");
             }
-            else if (uriPath == "/api/sighting/1")
+            else if (uriPath == "/api/sightings/1")
             {
                 response.Content = new StringContent(@"{
                                                         ""SightingId"": 51850255,
