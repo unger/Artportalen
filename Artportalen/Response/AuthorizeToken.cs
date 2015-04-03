@@ -19,7 +19,7 @@
         {
             get
             {
-                return this.createDateTime.AddMilliseconds(this.expires_in);
+                return this.createDateTime.AddSeconds(this.expires_in);
             }
         }
 
@@ -27,7 +27,8 @@
         {
             get
             {
-                return DateTime.Now < this.AbsoluteExpiration;
+
+                return !string.IsNullOrEmpty(this.access_token) && DateTime.Now < this.AbsoluteExpiration;
             }
         }
     }

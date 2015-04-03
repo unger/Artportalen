@@ -45,14 +45,10 @@
 
             var userName = this.GetUserName(basicAuthToken);
             var authToken = this.GetAuthToken(userName);
-            if (!string.IsNullOrEmpty(authToken.access_token))
-            {
-                return;
-            }
 
             if (authToken.IsValid)
             {
-                //return;
+                return;
             }
 
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
@@ -93,7 +89,7 @@
             return this.Execute<SightingsCollection>(request).Value;
         }
 
-        public Site[] Sites(int coordSysId, string east, string north, int radius, int count, int? speciesGroupId = null)
+        public Site[] SitesWithinRadius(int coordSysId, string east, string north, int radius, int count, int? speciesGroupId = null)
         {
             string queryString = this.GetQueryString(new
                                                          {
@@ -101,6 +97,21 @@
                                                              count
                                                          });
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/withinradius/coordsystem/{0}/east/{1}/north/{2}/radius/{3}?{4}", coordSysId, east, north, radius, queryString));
+            this.AddSessionAuthorizationHeader(request);
+
+            var response = this.Execute<BaseCollection<Site>>(request).Value;
+
+            return response != null ? response.Data : new Site[0];
+        }
+
+        public Site[] SitesContainingPoint(int coordSysId, string east, string north, int count, int? speciesGroupId = null)
+        {
+            string queryString = this.GetQueryString(new
+                                                         {
+                                                             speciesGroupId,
+                                                             count
+                                                         });
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/containingpoint/coordsystem/{0}/east/{1}/north/{2}/?{3}", coordSysId, east, north, queryString));
             this.AddSessionAuthorizationHeader(request);
 
             var response = this.Execute<BaseCollection<Site>>(request).Value;
