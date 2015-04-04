@@ -80,13 +80,13 @@
             return this.Execute<Sighting>(request).Value;
         }
 
-        public SightingsCollection Sightings(SightingsQuery search)
+        public SightingsResponse Sightings(SightingsQuery search)
         {
             string queryString = this.GetQueryString(search);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/search?{0}", queryString));
             this.AddSessionAuthorizationHeader(request);
 
-            return this.Execute<SightingsCollection>(request).Value;
+            return this.Execute<SightingsResponse>(request).Value;
         }
 
         public Site[] SitesWithinRadius(int coordSysId, string east, string north, int radius, int count, int? speciesGroupId = null)

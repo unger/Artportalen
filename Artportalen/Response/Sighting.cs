@@ -28,13 +28,13 @@
 
         public string Unit { get; set; }
 
-        public int QuantityOfSubstrate { get; set; }
+        public int? QuantityOfSubstrate { get; set; }
 
         public string DiscoveryMethod { get; set; }
 
-        public int Length { get; set; }
+        public int? Length { get; set; }
 
-        public int Weight { get; set; }
+        public int? Weight { get; set; }
 
         public PrivateComment PrivateComment { get; set; }
 
@@ -60,13 +60,13 @@
 
         public bool NotRecovered { get; set; }
 
-        public int MinDepth { get; set; }
+        public int? MinDepth { get; set; }
 
-        public int MaxDepth { get; set; }
+        public int? MaxDepth { get; set; }
 
-        public int MinHeight { get; set; }
+        public int? MinHeight { get; set; }
 
-        public int MaxHeight { get; set; }
+        public int? MaxHeight { get; set; }
 
         public string PublicComment { get; set; }
     }

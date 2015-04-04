@@ -1,7 +1,9 @@
 ﻿namespace Artportalen.Response
 {
-    public class SightingsCollection : BaseCollection<Sighting>
+    public class SightingsResponse
     {
         public Pager Pager { get; set; }
+
+        public Sighting[] Data { get; set; }
     }
 }

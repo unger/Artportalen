@@ -1,11 +1,9 @@
 ﻿namespace Artportalen.Response
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Data.Common;
+    using System.Net;
     using System.Net.Http;
-
-    using fastJSON;
+    using System.Web;
+    using System.Web.Script.Serialization;
 
     public class ResponseWrapper<T> where T : class
     {
@@ -21,6 +19,11 @@
 
         private T ParseValue(HttpResponseMessage response)
         {
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                throw new HttpException(string.Format("Remote server returned Internal Server Error: {0}", response.ReasonPhrase));
+            }
+
             var content = response.Content != null ? response.Content.ReadAsStringAsync().Result : null;
             if (content != null)
             {
@@ -29,24 +32,7 @@
                     return content as T;
                 }
 
-                try
-                {
-                    // special handling for string[]
-                    if (typeof(T).IsArray && typeof(T).GetElementType() == typeof(string))
-                    {
-                        var result = JSON.Parse(content) as List<object>;
-                        if (result != null)
-                        {
-                            return result.ConvertAll(o => o.ToString()).ToArray() as T;
-                        }
-                    }
-
-                    return JSON.ToObject<T>(content);
-                }
-                catch (Exception e)
-                {
-                    throw new Exception(content);
-                }
+                return new JavaScriptSerializer().Deserialize<T>(content);
              }
 
             return default(T);

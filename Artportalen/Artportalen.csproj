@@ -31,13 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="fastjson">
-      <HintPath>..\packages\fastJSON.2.1.11.0\lib\net40\fastjson.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,16 +51,13 @@
     <Compile Include="Response\Taxon.cs" />
     <Compile Include="Response\Site.cs" />
     <Compile Include="Response\CoordinateSystem.cs" />
-    <Compile Include="Response\SightingsCollection.cs" />
+    <Compile Include="Response\SightingsResponse.cs" />
     <Compile Include="Response\Pager.cs" />
     <Compile Include="Response\BaseCollection.cs" />
     <Compile Include="Response\PrivateComment.cs" />
     <Compile Include="Response\ResponseWrapper.cs" />
     <Compile Include="Response\Sighting.cs" />
     <Compile Include="Response\SpeciesGroup.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
