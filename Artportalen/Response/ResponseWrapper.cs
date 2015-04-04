@@ -1,5 +1,6 @@
 ﻿namespace Artportalen.Response
 {
+    using System;
     using System.Net;
     using System.Net.Http;
     using System.Web;
@@ -19,12 +20,18 @@
 
         private T ParseValue(HttpResponseMessage response)
         {
+            var content = response.Content != null ? response.Content.ReadAsStringAsync().Result : null;
+
             if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
-                throw new HttpException(string.Format("Remote server returned Internal Server Error: {0}", response.ReasonPhrase));
+                throw new Exception(string.Format(
+                    "Remote server returned {0} {1}\n\n [{2}]\n\n {3}",
+                    (int)response.StatusCode,
+                    response.ReasonPhrase,
+                    response.RequestMessage.RequestUri,
+                    content));
             }
 
-            var content = response.Content != null ? response.Content.ReadAsStringAsync().Result : null;
             if (content != null)
             {
                 if (typeof(T) == typeof(string))
@@ -32,7 +39,20 @@
                     return content as T;
                 }
 
-                return new JavaScriptSerializer().Deserialize<T>(content);
+                try
+                {
+                    return new JavaScriptSerializer().Deserialize<T>(content);
+                }
+                catch (Exception e)
+                {
+                    throw new Exception(string.Format(
+                        "Remote server returned {0} {1}\n\n [{2}]\n\n {3}\n {4}", 
+                        (int)response.StatusCode, 
+                        response.ReasonPhrase, 
+                        response.RequestMessage.RequestUri,
+                        e.Message,
+                        content));
+                }
              }
 
             return default(T);

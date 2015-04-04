@@ -33,6 +33,28 @@
 
         public string AccessKey { get; private set; }
 
+        public Accuracy[] Accuracies()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/accuracies");
+
+            var response = this.Execute<Accuracy[]>(request).Value;
+
+            return response;
+        }
+
+        public Activity[] Activities(int? speciesGroupId = null)
+        {
+            var url = speciesGroupId.HasValue
+                          ? string.Format("/api/speciesgroup/{0}/activities", speciesGroupId)
+                          : "/api/activities";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = this.Execute<BaseCollection<Activity>>(request).Value;
+
+            return response != null ? response.Data : new Activity[0];
+        }
+
         public void Authorize(string user, string password)
         {
             var basicAuthToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
@@ -70,6 +92,45 @@
             var response = this.Execute<BaseCollection<CoordinateSystem>>(request).Value;
 
             return response != null ? response.Data : new CoordinateSystem[0];
+        }
+
+        public DeterminationMethod[] DeterminationMethods(int? speciesGroupId = null)
+        {
+            var url = speciesGroupId.HasValue
+                          ? string.Format("/api/speciesgroup/{0}/determinationmethods", speciesGroupId)
+                          : "/api/determinationmethods";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = this.Execute<BaseCollection<DeterminationMethod>>(request).Value;
+
+            return response != null ? response.Data : new DeterminationMethod[0];
+        }
+
+        public DiscoveryMethod[] DiscoveryMethods(int? speciesGroupId = null)
+        {
+            var url = speciesGroupId.HasValue
+                          ? string.Format("/api/speciesgroup/{0}/discoverymethods", speciesGroupId)
+                          : "/api/discoverymethods";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = this.Execute<BaseCollection<DiscoveryMethod>>(request).Value;
+
+            return response != null ? response.Data : new DiscoveryMethod[0];
+        }
+
+        public Gender[] Genders(int? speciesGroupId = null)
+        {
+            var url = speciesGroupId.HasValue
+                          ? string.Format("/api/speciesgroup/{0}/genders", speciesGroupId)
+                          : "/api/genders";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = this.Execute<BaseCollection<Gender>>(request).Value;
+
+            return response != null ? response.Data : new Gender[0];
         }
 
         public Sighting Sighting(long id)
@@ -128,6 +189,19 @@
             return response != null ? response.Data : new SpeciesGroup[0];
         }
 
+        public Stage[] Stages(int? speciesGroupId = null)
+        {
+            var url = speciesGroupId.HasValue
+                          ? string.Format("/api/speciesgroup/{0}/stages", speciesGroupId)
+                          : "/api/stages";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = this.Execute<BaseCollection<Stage>>(request).Value;
+
+            return response != null ? response.Data : new Stage[0];
+        }
+
         public Taxon Taxon(int taxonId)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/taxon/{0}", taxonId));
@@ -149,6 +223,19 @@
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/testvalues");
 
             return this.Execute<string[]>(request).Value;
+        }
+
+        public Unit[] Units(int? speciesGroupId = null)
+        {
+            var url = speciesGroupId.HasValue
+                          ? string.Format("/api/speciesgroup/{0}/units", speciesGroupId)
+                          : "/api/units";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = this.Execute<BaseCollection<Unit>>(request).Value;
+
+            return response != null ? response.Data : new Unit[0];
         }
 
         private ResponseWrapper<T> Execute<T>(HttpRequestMessage request) where T : class
