@@ -1,14 +1,13 @@
 ﻿namespace Artportalen
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
     using System.Web;
-    using System.Web.Caching;
 
+    using Artportalen.Helpers;
     using Artportalen.Request;
     using Artportalen.Response;
 
@@ -20,15 +19,19 @@
 
         private string basicAuthorizationParameter;
 
+        private IAuthTokenRepository authTokenRepository;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="accessKey">All requests need an Access Key</param>
-        /// <param name="httpMessageHandler">Used in Unit Tests to check request and response values</param>
-        public Ap2Client(string accessKey, HttpMessageHandler httpMessageHandler = null)
+        /// <param name="authTokenRepository">Can be used to switch the storage of AuthTokens, if null Cache will be used</param>
+        /// <param name="httpMessageHandler">Used in Unit Tests to check request and response values, otherwise use null</param>
+        public Ap2Client(string accessKey, IAuthTokenRepository authTokenRepository = null, HttpMessageHandler httpMessageHandler = null)
         {
             this.AccessKey = accessKey;
             this.httpClient = this.CreateClient(httpMessageHandler);
+            this.authTokenRepository = authTokenRepository ?? new CacheAuthTokenRepository();
         }
 
         public string AccessKey { get; private set; }
@@ -66,7 +69,7 @@
             this.basicAuthorizationParameter = basicAuthToken;
 
             var userName = this.GetUserName(basicAuthToken);
-            var authToken = this.GetAuthToken(userName);
+            var authToken = this.authTokenRepository.Get(userName);
 
             if (authToken.IsValid)
             {
@@ -81,7 +84,7 @@
 
             if (response.Value != null)
             {
-                this.SetAuthToken(response.Value, userName);
+                this.authTokenRepository.Save(response.Value, userName);
             }
         }
 
@@ -135,6 +138,7 @@
 
         public Sighting Sighting(long id)
         {
+            this.Authorize(this.basicAuthorizationParameter);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/{0}", id));
             this.AddSessionAuthorizationHeader(request);
 
@@ -143,6 +147,7 @@
 
         public SightingsResponse Sightings(SightingsQuery search)
         {
+            this.Authorize(this.basicAuthorizationParameter);
             string queryString = this.GetQueryString(search);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/search?{0}", queryString));
             this.AddSessionAuthorizationHeader(request);
@@ -152,6 +157,7 @@
 
         public Site[] SitesWithinRadius(int coordSysId, string east, string north, int radius, int count, int? speciesGroupId = null)
         {
+            this.Authorize(this.basicAuthorizationParameter);
             string queryString = this.GetQueryString(new
                                                          {
                                                              speciesGroupId,
@@ -167,6 +173,7 @@
 
         public Site[] SitesContainingPoint(int coordSysId, string east, string north, int count, int? speciesGroupId = null)
         {
+            this.Authorize(this.basicAuthorizationParameter);
             string queryString = this.GetQueryString(new
                                                          {
                                                              speciesGroupId,
@@ -204,6 +211,7 @@
 
         public Taxon Taxon(int taxonId)
         {
+            this.Authorize(this.basicAuthorizationParameter);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/taxon/{0}", taxonId));
             this.AddSessionAuthorizationHeader(request);
 
@@ -212,6 +220,7 @@
 
         public string[] Test()
         {
+            this.Authorize(this.basicAuthorizationParameter);
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/test");
             this.AddSessionAuthorizationHeader(request);
 
@@ -246,7 +255,7 @@
         private void AddSessionAuthorizationHeader(HttpRequestMessage request)
         {
             var userName = this.GetUserName(this.basicAuthorizationParameter);
-            var authToken = this.GetAuthToken(userName);
+            var authToken = this.authTokenRepository.Get(userName);
 
             if (string.IsNullOrEmpty(authToken.access_token))
             {
@@ -280,22 +289,6 @@
                              select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
             return string.Join("&", properties.ToArray());
-        }
-
-        private AuthorizeToken GetAuthToken(string userName)
-        {
-            var token = HttpRuntime.Cache["AuthToken_" + userName] as AuthorizeToken;
-            if (token != null)
-            {
-                return token;
-            }
-
-            return new AuthorizeToken();
-        }
-
-        private void SetAuthToken(AuthorizeToken token, string userName)
-        {
-            HttpRuntime.Cache["AuthToken_" + userName] = token;
         }
 
         private string GetUserName(string basicAuthToken)

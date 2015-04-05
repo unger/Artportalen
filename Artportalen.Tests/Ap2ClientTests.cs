@@ -4,6 +4,7 @@
     using System.Net.Http.Headers;
     using System.Text;
 
+    using Artportalen.Helpers;
     using Artportalen.Request;
     using Artportalen.Response;
     using Artportalen.Tests.Fakes;
@@ -20,7 +21,7 @@
         [SetUp]
         public void Setup()
         {
-            this.ap2Client = new Ap2Client("12345", this.httpMessageHandler);
+            this.ap2Client = new Ap2Client("12345", null, this.httpMessageHandler);
         }
 
         [Test]
