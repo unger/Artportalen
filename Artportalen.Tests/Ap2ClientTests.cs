@@ -17,11 +17,14 @@
         private readonly FakeHttpMessageHandler httpMessageHandler = new FakeHttpMessageHandler();
 
         private Ap2Client ap2Client;
+        private AuthorizeToken authToken;
 
         [SetUp]
         public void Setup()
         {
-            this.ap2Client = new Ap2Client("12345", null, this.httpMessageHandler);
+            this.ap2Client = new Ap2Client("12345", this.httpMessageHandler);
+
+            this.authToken = this.ap2Client.Authorize("test", "test");
         }
 
         [Test]
@@ -39,9 +42,7 @@
         [Test]
         public void Sighting_ById_ShouldReturnSighting()
         {
-            this.ap2Client.Authorize("test", "test");
-
-            var result = this.ap2Client.Sighting(1);
+            var result = this.ap2Client.Sighting(1, this.authToken);
 
             Assert.IsInstanceOf<Sighting>(result);
         }
@@ -49,9 +50,7 @@
         [Test]
         public void Sightings_VerifySerializeOneParameter()
         {
-            this.ap2Client.Authorize("test", "test");
-
-            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1 });
+            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1 }, this.authToken);
 
             Assert.AreEqual("?TaxonId=1", this.httpMessageHandler.Request.RequestUri.Query);
         }
@@ -59,9 +58,7 @@
         [Test]
         public void Sightings_VerifySerializeTwoParameters()
         {
-            this.ap2Client.Authorize("test", "test");
-
-            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2 });
+            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2 }, this.authToken);
 
             Assert.AreEqual("?TaxonId=1&PageNumber=2", this.httpMessageHandler.Request.RequestUri.Query);
         }
@@ -69,9 +66,7 @@
         [Test]
         public void Sightings_VerifySerializeFourParameters()
         {
-            this.ap2Client.Authorize("test", "test");
-
-            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2, SortField = "StartDate", SortOrder = "Descending" });
+            var result = this.ap2Client.Sightings(new SightingsQuery { TaxonId = 1, PageNumber = 2, SortField = "StartDate", SortOrder = "Descending" }, this.authToken);
 
             Assert.AreEqual("?TaxonId=1&PageNumber=2&SortField=StartDate&SortOrder=Descending", this.httpMessageHandler.Request.RequestUri.Query);
         }
@@ -79,9 +74,7 @@
         [Test]
         public void Test_CheckSessionAuthorizationHeaderExists()
         {
-            this.ap2Client.Authorize("test", "test");
-
-            this.ap2Client.Test();
+            this.ap2Client.Test(this.authToken);
 
             Assert.NotNull(this.httpMessageHandler.Request.Headers.Authorization);
             Assert.AreEqual("Session", this.httpMessageHandler.Request.Headers.Authorization.Scheme);
@@ -90,9 +83,7 @@
         [Test]
         public void Test_VerifyStringArrayContent()
         {
-            this.ap2Client.Authorize("test", "test");
-
-            var result = this.ap2Client.Test();
+            var result = this.ap2Client.Test(this.authToken);
 
             Assert.AreEqual(new[] { "User:Magnus Unger" }, result);
         }

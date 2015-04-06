@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Security.Authentication;
     using System.Text;
     using System.Web;
 
@@ -17,21 +18,15 @@
 
         private readonly HttpClient httpClient;
 
-        private string basicAuthorizationParameter;
-
-        private IAuthTokenRepository authTokenRepository;
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="accessKey">All requests need an Access Key</param>
-        /// <param name="authTokenRepository">Can be used to switch the storage of AuthTokens, if null Cache will be used</param>
         /// <param name="httpMessageHandler">Used in Unit Tests to check request and response values, otherwise use null</param>
-        public Ap2Client(string accessKey, IAuthTokenRepository authTokenRepository = null, HttpMessageHandler httpMessageHandler = null)
+        public Ap2Client(string accessKey, HttpMessageHandler httpMessageHandler = null)
         {
             this.AccessKey = accessKey;
             this.httpClient = this.CreateClient(httpMessageHandler);
-            this.authTokenRepository = authTokenRepository ?? new CacheAuthTokenRepository();
         }
 
         public string AccessKey { get; private set; }
@@ -58,34 +53,19 @@
             return response != null ? response.Data : new Activity[0];
         }
 
-        public void Authorize(string user, string password)
+        public AuthorizeToken Authorize(string user, string password)
         {
             var basicAuthToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
-            this.Authorize(basicAuthToken);
+            return this.Authorize(basicAuthToken);
         }
 
-        public void Authorize(string basicAuthToken)
+        public AuthorizeToken Authorize(string basicAuthToken)
         {
-            this.basicAuthorizationParameter = basicAuthToken;
-
-            var userName = this.GetUserName(basicAuthToken);
-            var authToken = this.authTokenRepository.Get(userName);
-
-            if (authToken.IsValid)
-            {
-                return;
-            }
-
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/token");
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", basicAuthToken);
 
-            var response = this.Execute<AuthorizeToken>(request);
-
-            if (response.Value != null)
-            {
-                this.authTokenRepository.Save(response.Value, userName);
-            }
+            return this.Execute<AuthorizeToken>(request).Value;
         }
 
         public CoordinateSystem[] CoordinateSystems()
@@ -136,51 +116,82 @@
             return response != null ? response.Data : new Gender[0];
         }
 
-        public Sighting Sighting(long id)
+        public Sighting Sighting(long id, AuthorizeToken authToken)
         {
-            this.Authorize(this.basicAuthorizationParameter);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/{0}", id));
-            this.AddSessionAuthorizationHeader(request);
+            this.AddSessionAuthorizationHeader(request, authToken);
 
             return this.Execute<Sighting>(request).Value;
         }
 
-        public SightingsResponse Sightings(SightingsQuery search)
+        public SightingsResponse Sightings(SightingsQuery search, AuthorizeToken authToken)
         {
-            this.Authorize(this.basicAuthorizationParameter);
             string queryString = this.GetQueryString(search);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/search?{0}", queryString));
-            this.AddSessionAuthorizationHeader(request);
+            this.AddSessionAuthorizationHeader(request, authToken);
 
             return this.Execute<SightingsResponse>(request).Value;
         }
 
-        public Site[] SitesWithinRadius(int coordSysId, string east, string north, int radius, int count, int? speciesGroupId = null)
+        public Site[] SitesWithinRadius(SitesQuery query, AuthorizeToken authToken)
         {
-            this.Authorize(this.basicAuthorizationParameter);
+            if (query.CoordSysId == 0)
+            {
+                throw new ArgumentException("Coordinate system needs to be set in query");
+            }
+
+            if (string.IsNullOrEmpty(query.East))
+            {
+                throw new ArgumentException("East coordinate needs to be set in query");
+            }
+
+            if (string.IsNullOrEmpty(query.North))
+            {
+                throw new ArgumentException("North coordinate needs to be set in query");
+            }
+
+            if (query.Radius == 0)
+            {
+                throw new ArgumentException("Radius needs to be set in query");
+            }
+
             string queryString = this.GetQueryString(new
                                                          {
-                                                             speciesGroupId,
-                                                             count
+                                                             speciesGroupId = query.SpeciesGroupId,
+                                                             count = query.Count
                                                          });
-            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/withinradius/coordsystem/{0}/east/{1}/north/{2}/radius/{3}?{4}", coordSysId, east, north, radius, queryString));
-            this.AddSessionAuthorizationHeader(request);
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/withinradius/coordsystem/{0}/east/{1}/north/{2}/radius/{3}?{4}", query.CoordSysId, query.East, query.North, query.Radius, queryString));
+            this.AddSessionAuthorizationHeader(request, authToken);
 
             var response = this.Execute<BaseCollection<Site>>(request).Value;
 
             return response != null ? response.Data : new Site[0];
         }
 
-        public Site[] SitesContainingPoint(int coordSysId, string east, string north, int count, int? speciesGroupId = null)
+        public Site[] SitesContainingPoint(SitesQuery query, AuthorizeToken authToken)
         {
-            this.Authorize(this.basicAuthorizationParameter);
+            if (query.CoordSysId == 0)
+            {
+                throw new ArgumentException("Coordinate system needs to be set in query");
+            }
+
+            if (string.IsNullOrEmpty(query.East))
+            {
+                throw new ArgumentException("East coordinate needs to be set in query");
+            }
+
+            if (string.IsNullOrEmpty(query.North))
+            {
+                throw new ArgumentException("North coordinate needs to be set in query");
+            }
+
             string queryString = this.GetQueryString(new
                                                          {
-                                                             speciesGroupId,
-                                                             count
+                                                             speciesGroupId = query.SpeciesGroupId,
+                                                             count = query.Count
                                                          });
-            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/containingpoint/coordsystem/{0}/east/{1}/north/{2}/?{3}", coordSysId, east, north, queryString));
-            this.AddSessionAuthorizationHeader(request);
+            var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sites/containingpoint/coordsystem/{0}/east/{1}/north/{2}/?{3}", query.CoordSysId, query.East, query.North, queryString));
+            this.AddSessionAuthorizationHeader(request, authToken);
 
             var response = this.Execute<BaseCollection<Site>>(request).Value;
 
@@ -211,18 +222,15 @@
 
         public Taxon Taxon(int taxonId)
         {
-            this.Authorize(this.basicAuthorizationParameter);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/taxon/{0}", taxonId));
-            this.AddSessionAuthorizationHeader(request);
 
             return this.Execute<Taxon>(request).Value;
         }
 
-        public string[] Test()
+        public string[] Test(AuthorizeToken authToken)
         {
-            this.Authorize(this.basicAuthorizationParameter);
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/test");
-            this.AddSessionAuthorizationHeader(request);
+            this.AddSessionAuthorizationHeader(request, authToken);
 
             return this.Execute<string[]>(request).Value;
         }
@@ -252,10 +260,12 @@
             return new ResponseWrapper<T>(this.httpClient.SendAsync(request).Result);
         }
 
-        private void AddSessionAuthorizationHeader(HttpRequestMessage request)
+        private void AddSessionAuthorizationHeader(HttpRequestMessage request, AuthorizeToken authToken)
         {
-            var userName = this.GetUserName(this.basicAuthorizationParameter);
-            var authToken = this.authTokenRepository.Get(userName);
+            if (!authToken.IsValid)
+            {
+                throw new AuthenticationException("AuthorizeToken not valid call Authorize method to authenticate");
+            }
 
             if (string.IsNullOrEmpty(authToken.access_token))
             {
@@ -289,18 +299,6 @@
                              select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
             return string.Join("&", properties.ToArray());
-        }
-
-        private string GetUserName(string basicAuthToken)
-        {
-            if (string.IsNullOrEmpty(basicAuthToken))
-            {
-                return "Anonymous";
-            }
-
-            var unencoded = Encoding.UTF8.GetString(Convert.FromBase64String(basicAuthToken));
-            var parts = unencoded.Split(new[] { ':' });
-            return parts[0];
         }
     }
 }

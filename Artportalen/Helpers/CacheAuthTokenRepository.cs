@@ -12,7 +12,7 @@
             return token ?? new AuthorizeToken();
         }
 
-        public void Save(AuthorizeToken token, string userName)
+        public void Save(string userName, AuthorizeToken token)
         {
             HttpRuntime.Cache["AuthToken_" + userName] = token;
         }

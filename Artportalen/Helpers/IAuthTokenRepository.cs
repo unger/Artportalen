@@ -6,6 +6,6 @@
     {
         AuthorizeToken Get(string userName);
 
-        void Save(AuthorizeToken token, string userName);
+        void Save(string userName, AuthorizeToken token);
     }
 }
