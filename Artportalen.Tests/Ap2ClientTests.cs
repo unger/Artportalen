@@ -4,7 +4,6 @@
     using System.Net.Http.Headers;
     using System.Text;
 
-    using Artportalen.Helpers;
     using Artportalen.Request;
     using Artportalen.Response;
     using Artportalen.Tests.Fakes;

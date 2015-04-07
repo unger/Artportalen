@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Ap2AuthManager.cs" />
     <Compile Include="Ap2Client.cs" />
+    <Compile Include="Ap2SightingsService.cs" />
     <Compile Include="Helpers\CacheAuthTokenRepository.cs" />
     <Compile Include="Helpers\IAuthTokenRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -8,7 +8,6 @@
     using System.Text;
     using System.Web;
 
-    using Artportalen.Helpers;
     using Artportalen.Request;
     using Artportalen.Response;
 
@@ -124,13 +123,16 @@
             return this.Execute<Sighting>(request).Value;
         }
 
-        public SightingsResponse Sightings(SightingsQuery search, AuthorizeToken authToken)
+        public SightingsResponse Sightings(SightingsQuery query, AuthorizeToken authToken)
         {
-            string queryString = this.GetQueryString(search);
+            string queryString = this.GetQueryString(query);
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/search?{0}", queryString));
             this.AddSessionAuthorizationHeader(request, authToken);
 
-            return this.Execute<SightingsResponse>(request).Value;
+            var response = this.Execute<SightingsResponse>(request).Value;
+            response.Query = query;
+
+            return response;
         }
 
         public Site[] SitesWithinRadius(SitesQuery query, AuthorizeToken authToken)
