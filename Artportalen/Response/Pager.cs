@@ -11,5 +11,23 @@
         public string SortField { get; set; }
 
         public string SortOrder { get; set; }
+
+        public bool HasNextPage
+        {
+            get
+            {
+                return this.PageIndex < this.PageCount;
+            }
+        }
+
+        public int PageCount
+        {
+            get
+            {
+                var even = this.TotalCount % this.PageSize == 0;
+
+                return (this.TotalCount / this.PageSize) + (even ? 0 : 1);
+            }
+        }
     }
 }

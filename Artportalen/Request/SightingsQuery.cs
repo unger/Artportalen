@@ -2,7 +2,7 @@
 {
     public class SightingsQuery
     {
-        public string SpeciesGroupId { get; set; }
+        public int? SpeciesGroupId { get; set; }
 
         public int? TaxonId { get; set; }
 
@@ -31,5 +31,7 @@
         public string SortField { get; set; }
 
         public string SortOrder { get; set; }
+
+        public long? LastSightingId { get; set; }
     }
 }
