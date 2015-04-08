@@ -1,9 +1,9 @@
 version: 0.1.{build}
 before_build:
-  - nuget restore ".\Artportalen.sln"  
+  - nuget restore ".\Artportalen\Artportalen.csproj"  
 configuration: Release
 build:
-  project: .\Artportalen.sln
+  project: .\Artportalen\Artportalen.csproj
   publish_nuget: true
   verbosity: minimal
 assembly_info:
