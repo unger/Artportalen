@@ -1,0 +1,18 @@
+version: 0.1.{build}
+before_build:
+  - nuget restore ".\Artportalen.sln"  
+configuration: Release
+build:
+  project: .\Artportalen.sln
+  publish_nuget: true
+  verbosity: minimal
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+artifacts:
+- path: '*.nupkg'
+  name: Nuget
+  
