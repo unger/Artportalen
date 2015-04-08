@@ -1,6 +1,4 @@
 version: 0.1.{build}
-before_build:
-  - nuget restore ".\Artportalen\Artportalen.csproj"  
 configuration: Release
 build:
   project: .\Artportalen\Artportalen.csproj
