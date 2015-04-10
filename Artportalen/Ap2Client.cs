@@ -297,7 +297,7 @@
         private string GetQueryString(object obj)
         {
             var properties = from p in obj.GetType().GetProperties()
-                             where p.GetValue(obj, null) != null
+                             where p.GetValue(obj, null) != null && p.Name != "LastSightingId"
                              select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
             return string.Join("&", properties.ToArray());
