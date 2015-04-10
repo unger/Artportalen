@@ -66,11 +66,11 @@
     <Compile Include="Scheduling\DownloadSightingsJob.cs" />
   </ItemGroup>
   <ItemGroup>
-<Content Include="App.config" />
-<Content Include="App.Release.config" >
-  <DependentUpon>App.config</DependentUpon>
-</Content>  
-  
+    <Content Include="App.config" />
+    <Content Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="appSettings.config" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
@@ -94,7 +94,6 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  
   <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\Web\Microsoft.Web.Publishing.Tasks.dll" />
   <Target Name="AfterCompile" Condition="exists('app.$(Configuration).config')">
     <!-- Generate transformed app config in the intermediate directory -->
@@ -106,8 +105,7 @@
         <TargetPath>$(TargetFileName).config</TargetPath>
       </AppConfigWithTargetPath>
     </ItemGroup>
-  </Target>  
-  
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
