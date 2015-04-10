@@ -17,6 +17,8 @@
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
+        private static long? lastSightingId;
+
         public void Execute(IJobExecutionContext jobContext)
         {
             ConsoleMirror.Initialize();
@@ -29,13 +31,18 @@
                 var authManager = new Ap2AuthManager(System.Configuration.ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
                 var sightingsService = new Ap2SightingsService(ap2Client, authManager);
 
-                var result = sightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar);
-                Console.WriteLine("Page {0} count {1}", result.Pager.PageIndex, result.Data.Length);
+                var result = sightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId);
+                Console.WriteLine("Page {0} count {1} [{2}]", result.Pager.PageIndex, result.Data.Length, lastSightingId);
+
+                if (result.Data.Length > 0)
+                {
+                    lastSightingId = result.Data[0].SightingId;
+                }
 
                 while (result.Pager.HasNextPage)
                 {
                     result = sightingsService.GetNextPage(result);
-                    Console.WriteLine("Page {0} count {1}", result.Pager.PageIndex, result.Data.Length);                    
+                    Console.WriteLine("Page {0} count {1} [{2}]", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId);
                 }
             }
             catch (Exception e)
