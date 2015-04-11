@@ -30,6 +30,8 @@
 
         public string AccessKey { get; private set; }
 
+        public HttpResponseMessage LastResponseMessage { get; private set; }
+
         public Accuracy[] Accuracies()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, "/api/accuracies");
@@ -259,7 +261,8 @@
 
         private ResponseWrapper<T> Execute<T>(HttpRequestMessage request) where T : class
         {
-            return new ResponseWrapper<T>(this.httpClient.SendAsync(request).Result);
+            this.LastResponseMessage = this.httpClient.SendAsync(request).Result;
+            return new ResponseWrapper<T>(this.LastResponseMessage);
         }
 
         private void AddSessionAuthorizationHeader(HttpRequestMessage request, AuthorizeToken authToken)
