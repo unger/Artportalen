@@ -27,7 +27,7 @@
         {
             return Fluently.Configure()
               .Database(MsSqlConfiguration
-                        .MsSql2012
+                        .MsSql2008
                         .ConnectionString(System.Configuration.ConfigurationManager.ConnectionStrings["SqlDbConnection"].ConnectionString))
               .Mappings(m =>
                 m.FluentMappings.AddFromAssemblyOf<SightingDtoMap>())
