@@ -42,6 +42,7 @@
       <HintPath>..\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NHibernateConfiguration.cs" />
     <Compile Include="Mappings\SightingDtoMap.cs" />
     <Compile Include="Mappings\SiteDtoMap.cs" />
     <Compile Include="Mappings\TaxonDtoMap.cs" />

@@ -77,6 +77,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Artportalen.Sample.Data\Artportalen.Sample.Data.csproj">
+      <Project>{a3bc6ac3-bfbc-4c66-84a0-e0fab13b50b0}</Project>
+      <Name>Artportalen.Sample.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Artportalen\Artportalen.csproj">
       <Project>{6f78a318-4226-459c-957c-e9ffadf02bbe}</Project>
       <Name>Artportalen</Name>

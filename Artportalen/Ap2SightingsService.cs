@@ -2,6 +2,8 @@
 {
     using System;
     using System.Linq;
+    using System.Net;
+    using System.Security.Authentication;
 
     using Artportalen.Model;
     using Artportalen.Request;
@@ -54,6 +56,15 @@
         private SightingsResponse GetSightingsResponse(SightingsQuery query)
         {
             var result = this.ap2Client.Sightings(query, this.authManager.GetValidToken());
+
+            if (this.ap2Client.LastResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                result = this.ap2Client.Sightings(query, this.authManager.GetNewToken());
+                if (this.ap2Client.LastResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    throw new AuthenticationException("Authorization failed probably wrong credentials used.");
+                }
+            }
 
             if (query.LastSightingId.HasValue && query.LastSightingId > 0)
             {
