@@ -4,34 +4,36 @@
 
     public class SightingDto
     {
-        public long SightingId { get; set; }
+        public virtual long SightingId { get; set; }
 
-        public TaxonDto Taxon { get; set; }
+        public virtual TaxonDto Taxon { get; set; }
 
-        public int Quantity { get; set; }
+        public virtual int Quantity { get; set; }
 
-        public string Unit { get; set; }
+        public virtual string Unit { get; set; }
 
-        public SiteDto Site { get; set; }
+        public virtual SiteDto Site { get; set; }
 
-        public int? QuantityOfSubstrate { get; set; }
+        public virtual int? QuantityOfSubstrate { get; set; }
 
-        public string DiscoveryMethod { get; set; }
+        public virtual string DiscoveryMethod { get; set; }
 
-        public string SightingObservers { get; set; }
+        public virtual string SightingObservers { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public virtual DateTime StartDate { get; set; }
 
-        public string StartTime { get; set; }
+        public virtual string StartTime { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public virtual DateTime EndDate { get; set; }
 
-        public string EndTime { get; set; }
+        public virtual string EndTime { get; set; }
 
-        public bool UnsureDetermination { get; set; }
+        public virtual bool UnsureDetermination { get; set; }
 
-        public bool NotRecovered { get; set; }
+        public virtual bool NotRecovered { get; set; }
 
-        public string PublicComment { get; set; }
+        public virtual string PublicComment { get; set; }
+
+        public virtual DateTime? Updated { get; set; }
     }
 }

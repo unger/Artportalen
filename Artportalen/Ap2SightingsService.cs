@@ -55,7 +55,15 @@
 
         private SightingsResponse GetSightingsResponse(SightingsQuery query)
         {
-            var result = this.ap2Client.Sightings(query, this.authManager.GetValidToken());
+            SightingsResponse result;
+            try
+            {
+                result = this.ap2Client.Sightings(query, this.authManager.GetValidToken());
+            }
+            catch (Exception e)
+            {
+                result = new SightingsResponse { Data = new Sighting[0], Pager = new Pager(), Query = query };
+            }
 
             if (this.ap2Client.LastResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {

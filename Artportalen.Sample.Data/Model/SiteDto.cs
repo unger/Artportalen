@@ -1,31 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Artportalen.Sample.Data.Model
+﻿namespace Artportalen.Sample.Data.Model
 {
+    using System;
+
     public class SiteDto
     {
-        public long SiteId { get; set; }
+        public virtual long SiteId { get; set; }
 
-        public string SiteName { get; set; }
+        public virtual string SiteName { get; set; }
 
-        public int Accuracy { get; set; }
+        public virtual int Accuracy { get; set; }
 
-        public string Lan { get; set; }
+        public virtual string Lan { get; set; }
 
-        public string Forsamling { get; set; }
+        public virtual string Forsamling { get; set; }
 
-        public string Kommun { get; set; }
+        public virtual string Kommun { get; set; }
 
-        public string Socken { get; set; }
+        public virtual string Socken { get; set; }
 
-        public string Landskap { get; set; }
+        public virtual string Landskap { get; set; }
 
-        public int SiteYCoord { get; set; }
+        public virtual int SiteYCoord { get; set; }
 
-        public int SiteXCoord { get; set; }
+        public virtual int SiteXCoord { get; set; }
+
+        public virtual DateTime? Updated { get; set; }
     }
 }

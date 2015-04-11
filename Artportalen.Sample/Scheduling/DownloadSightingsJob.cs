@@ -7,6 +7,8 @@
 
     using Artportalen.Helpers;
     using Artportalen.Model;
+    using Artportalen.Sample.Data;
+    using Artportalen.Sample.Data.Services;
 
     using NLog;
     using NLog.Internal;
@@ -21,19 +23,22 @@
 
         public void Execute(IJobExecutionContext jobContext)
         {
+            var sightingsService = new SightingsService();
+
             ConsoleMirror.Initialize();
 
             Console.WriteLine(DateTimeOffset.Now);
 
             var ap2Client = new Ap2Client(System.Configuration.ConfigurationManager.AppSettings["Ap2AccessKey"]);
             var authManager = new Ap2AuthManager(System.Configuration.ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
-            var sightingsService = new Ap2SightingsService(ap2Client, authManager);
+            var ap2SightingsService = new Ap2SightingsService(ap2Client, authManager);
 
             try
             {
-                var result = sightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId);
+                var result = ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId);
 
                 Console.WriteLine("Page {0} count {1} [{2}]", result.Pager.PageIndex, result.Data.Length, lastSightingId);
+                sightingsService.StoreSightings(result.Data);
 
                 if (result.Data.Length > 0)
                 {
@@ -42,8 +47,9 @@
 
                 while (result.Pager.HasNextPage)
                 {
-                    result = sightingsService.GetNextPage(result);
+                    result = ap2SightingsService.GetNextPage(result);
                     Console.WriteLine("Page {0} count {1} [{2}]", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId);
+                    sightingsService.StoreSightings(result.Data);
                 }
             }
             catch (Exception e)

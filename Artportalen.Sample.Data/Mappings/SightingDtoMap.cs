@@ -8,7 +8,7 @@
     {
         public SightingDtoMap()
         {
-            this.Id(x => x.SightingId);
+            this.Id(x => x.SightingId).GeneratedBy.Assigned();
             this.Map(x => x.Quantity);
             this.Map(x => x.Unit);
             this.Map(x => x.QuantityOfSubstrate);
@@ -21,6 +21,11 @@
             this.Map(x => x.UnsureDetermination);
             this.Map(x => x.NotRecovered);
             this.Map(x => x.PublicComment);
+
+            this.References(x => x.Taxon, "TaxonId");
+            this.References(x => x.Site, "SiteId");
+
+            this.Version(x => x.Updated).CustomType("Timestamp").Nullable();
         }
     }
 }

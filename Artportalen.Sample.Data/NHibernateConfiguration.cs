@@ -1,7 +1,5 @@
 ﻿namespace Artportalen.Sample.Data
 {
-    using System.IO;
-
     using Artportalen.Sample.Data.Mappings;
 
     using FluentNHibernate.Cfg;
@@ -13,7 +11,19 @@
 
     public class NHibernateConfiguration
     {
-        public static ISessionFactory CreateSessionFactory()
+        private static ISessionFactory sessionFactory;
+
+        public static ISession GetSession()
+        {
+            if (sessionFactory == null)
+            {
+                sessionFactory = CreateSessionFactory();
+            }
+
+            return sessionFactory.OpenSession();
+        }
+
+        private static ISessionFactory CreateSessionFactory()
         {
             return Fluently.Configure()
               .Database(MsSqlConfiguration
@@ -29,8 +39,8 @@
         {
             // this NHibernate tool takes a configuration (with mapping info in)
             // and exports a database schema from it
-            new SchemaExport(config)
-              .Create(false, true);
+            new SchemaUpdate(config)
+              .Execute(false, true);
         }
 
     }
