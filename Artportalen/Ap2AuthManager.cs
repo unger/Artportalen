@@ -24,7 +24,8 @@
         public Ap2AuthManager(string basicAuthToken, Ap2Client ap2Client, IAuthTokenRepository authTokenRepository)
         {
             this.basicAuthToken = basicAuthToken;
-            this.userName = Encoding.UTF8.GetString(Convert.FromBase64String(basicAuthToken));
+            var unencoded = Encoding.UTF8.GetString(Convert.FromBase64String(basicAuthToken));
+            this.userName = unencoded.Split(new[] { ':' })[0];
             this.ap2Client = ap2Client;
             this.authTokenRepository = authTokenRepository;
         }

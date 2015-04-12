@@ -60,18 +60,9 @@
             {
                 result = this.ap2Client.Sightings(query, this.authManager.GetValidToken());
             }
-            catch (Exception e)
-            {
-                result = new SightingsResponse { Data = new Sighting[0], Pager = new Pager(), Query = query };
-            }
-
-            if (this.ap2Client.LastResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            catch (AuthenticationException e)
             {
                 result = this.ap2Client.Sightings(query, this.authManager.GetNewToken());
-                if (this.ap2Client.LastResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    throw new AuthenticationException("Authorization failed probably wrong credentials used.");
-                }
             }
 
             if (query.LastSightingId.HasValue && query.LastSightingId > 0)
