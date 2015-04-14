@@ -11,6 +11,9 @@
             this.Id(x => x.SightingId).GeneratedBy.Assigned();
             this.Map(x => x.Quantity);
             this.Map(x => x.Unit);
+            this.Map(x => x.ActivityId);
+            this.Map(x => x.GenderId);
+            this.Map(x => x.StageId);
             this.Map(x => x.QuantityOfSubstrate);
             this.Map(x => x.DiscoveryMethod);
             this.Map(x => x.SightingObservers);

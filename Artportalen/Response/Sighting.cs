@@ -52,6 +52,14 @@
 
         public int Quantity { get; set; }
 
+        public int? ActivityId { get; set; }
+
+        public int? StageId { get; set; }
+
+        public int? GenderId { get; set; }
+
+        public int SiteId { get; set; }
+
         public string SiteName { get; set; }
 
         public int Accuracy { get; set; }

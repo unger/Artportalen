@@ -15,6 +15,7 @@
     {
         public void StoreSightings(IEnumerable<Sighting> sightings)
         {
+            var siteDtos = new Dictionary<long, SiteDto>();
             var taxonDtos = new Dictionary<int, TaxonDto>();
             var sightingDtos = new List<SightingDto>();
 
@@ -24,6 +25,7 @@
                 var siteDto = SafeMap.Convert<Sighting, SiteDto>(sighting);
                 var sightingDto = SafeMap.Convert<Sighting, SightingDto>(sighting);
 
+                // Taxons
                 if (!taxonDtos.ContainsKey(taxonDto.TaxonId))
                 {
                     taxonDtos.Add(taxonDto.TaxonId, taxonDto);
@@ -35,15 +37,14 @@
 
                 sightingDto.Taxon = taxonDto;
 
-
-                var site = this.GetSite(siteDto.SiteXCoord, siteDto.SiteYCoord, siteDto.SiteName);
-                if (site != null)
+                // Sites
+                if (!siteDtos.ContainsKey(siteDto.SiteId))
                 {
-                    siteDto = site;
+                    siteDtos.Add(siteDto.SiteId, siteDto);
                 }
                 else
                 {
-                    this.CreateSite(siteDto);
+                    siteDto = siteDtos[siteDto.SiteId];
                 }
 
                 sightingDto.Site = siteDto;
@@ -53,6 +54,7 @@
 
             using (var session = NHibernateConfiguration.GetSession())
             {
+                // Taxons
                 foreach (var key in taxonDtos.Keys.ToArray())
                 {
                     var taxonDto = taxonDtos[key];
@@ -64,6 +66,21 @@
                     else
                     {
                         taxonDtos[key] = taxon;
+                    }
+                }
+
+                // Sites
+                foreach (var key in siteDtos.Keys.ToArray())
+                {
+                    var siteDto = siteDtos[key];
+                    var site = session.Get<SiteDto>(key);
+                    if (site == null)
+                    {
+                        session.Save(siteDto, siteDto.SiteId);
+                    }
+                    else
+                    {
+                        siteDtos[key] = site;
                     }
                 }
 
@@ -86,23 +103,5 @@
                 session.Flush();
             }
         }
-
-        private SiteDto GetSite(int siteXCoord, int siteYCoord, string name)
-        {
-            using (var session = NHibernateConfiguration.GetSession())
-            {
-                return session.Query<SiteDto>()
-                    .FirstOrDefault(x => x.SiteXCoord == siteXCoord && x.SiteYCoord == siteYCoord && x.SiteName == name);
-            }
-        }
-
-        private long CreateSite(SiteDto site)
-        {
-            using (var session = NHibernateConfiguration.GetSession())
-            {
-                return (long)session.Save(site);
-            }
-        }
-
     }
 }

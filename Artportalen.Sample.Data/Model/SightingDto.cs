@@ -12,6 +12,12 @@
 
         public virtual string Unit { get; set; }
 
+        public virtual int? ActivityId { get; set; }
+
+        public virtual int? StageId { get; set; }
+        
+        public virtual int? GenderId { get; set; }
+
         public virtual SiteDto Site { get; set; }
 
         public virtual int? QuantityOfSubstrate { get; set; }

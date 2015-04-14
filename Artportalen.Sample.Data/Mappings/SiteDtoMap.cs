@@ -8,7 +8,7 @@
     {
         public SiteDtoMap()
         {
-            this.Id(x => x.SiteId);
+            this.Id(x => x.SiteId).GeneratedBy.Assigned();
             this.Map(x => x.SiteName);
             this.Map(x => x.Accuracy);
             this.Map(x => x.Lan);
