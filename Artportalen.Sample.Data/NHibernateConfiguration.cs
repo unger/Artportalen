@@ -42,6 +42,5 @@
             new SchemaUpdate(config)
               .Execute(false, true);
         }
-
     }
 }
