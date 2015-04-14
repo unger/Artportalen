@@ -25,8 +25,8 @@
             this.Map(x => x.NotRecovered);
             this.Map(x => x.PublicComment);
 
-            this.References(x => x.Taxon, "TaxonId");
-            this.References(x => x.Site, "SiteId");
+            this.References(x => x.Taxon, "TaxonId").Not.LazyLoad();
+            this.References(x => x.Site, "SiteId").Not.LazyLoad();
 
             this.Version(x => x.Updated).CustomType("Timestamp").Nullable();
         }

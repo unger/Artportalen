@@ -13,6 +13,16 @@
 
     public class SightingsService
     {
+        public IEnumerable<SightingDto> GetSightings(DateTime date)
+        {
+            var nextDate = date.AddDays(1);
+            using (var session = NHibernateConfiguration.GetSession())
+            {
+                return session.Query<SightingDto>()
+                    .Where(x => x.StartDate >= date && x.EndDate < nextDate).ToArray();
+            }
+        }
+
         public void StoreSightings(IEnumerable<Sighting> sightings)
         {
             var siteDtos = new Dictionary<long, SiteDto>();

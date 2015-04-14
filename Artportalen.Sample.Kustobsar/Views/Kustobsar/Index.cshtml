@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Artportalen.Sample.Data.Model.SightingDto>
+@{
+    Layout = null;
+}<?xml version='1.0' encoding='ISO-8859-1' ?>
+<obslistning>
+@foreach (var sighting in Model)
+{
+<observation>
+<artid>@sighting.Taxon.TaxonId</artid>
+<svensktnamn>@sighting.Taxon.CommonName</svensktnamn>
+<engelsktnamn></engelsktnamn>
+<vetnamn>@sighting.Taxon.ScientificName</vetnamn>
+<unsure></unsure>
+<attribut>@sighting.Quantity</attribut>
+<antal>@sighting.Quantity</antal>
+<lokal>@sighting.Site.SiteName, @sighting.Site.Landskap</lokal>
+<lokalid>@sighting.Site.SiteId</lokalid>
+<xkoord>@sighting.Site.SiteXCoord</xkoord>
+<ykoord>@sighting.Site.SiteYCoord</ykoord>
+<rrkkod>10</rrkkod>
+<datum></datum>
+<startdat>@sighting.StartDate.ToString("yyyy-MM-dd")</startdat>
+<slutdat>@sighting.EndDate.ToString("yyyy-MM-dd")</slutdat>
+<starttid>@sighting.StartTime</starttid>
+<sluttid>@sighting.EndDate</sluttid>
+<personer>@sighting.SightingObservers</personer>
+<kommentar>@sighting.PublicComment</kommentar>
+<obsid>@sighting.SightingId</obsid>
+<obsida></obsida>
+<hasmedia></hasmedia>
+<fyndtyp>3</fyndtyp>
+<regionalstatus>1</regionalstatus>
+<rapportmall></rapportmall>
+<kalla>formular</kalla>
+</observation>
+}
+</obslistning>
