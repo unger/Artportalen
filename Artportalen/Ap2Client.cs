@@ -54,6 +54,26 @@
             return response != null ? response.Data : new Activity[0];
         }
 
+        public AreaDataset[] AreaDatasets()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/areadatasets");
+
+            var response = this.Execute<BaseCollection<AreaDataset>>(request).Value;
+
+            return response != null ? response.Data : new AreaDataset[0];
+        }
+
+        public Area[] Areas(int areaDatasetId, string search = "")
+        {
+            var request = new HttpRequestMessage(
+                HttpMethod.Get, 
+                string.Format("api/areadatasets/{0}/areas/{1}", areaDatasetId, search));
+
+            var response = this.Execute<BaseCollection<Area>>(request).Value;
+
+            return response != null ? response.Data : new Area[0];
+        }
+
         public AuthorizeToken Authorize(string user, string password)
         {
             var basicAuthToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
