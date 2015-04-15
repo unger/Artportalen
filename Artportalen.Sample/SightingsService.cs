@@ -97,7 +97,6 @@
                 foreach (var sighting in sightingDtos)
                 {
                     sighting.Taxon = taxonDtos[sighting.Taxon.TaxonId];
-                    sighting.Site = siteDtos[sighting.Site.SiteId];
 
                     var sightingFromDb = session.Get<SightingDto>(sighting.SightingId);
                     if (sightingFromDb == null)
