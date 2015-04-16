@@ -54,7 +54,7 @@
                     result = ap2SightingsService.GetNextPage(result);
                     stopwatch.Stop();
 
-                    Console.WriteLine("Page {0} count {1} [{2}] ({3}ms", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId, stopwatch.ElapsedMilliseconds);
+                    Console.WriteLine("Page {0} count {1} [{2}] ({3}ms)", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId, stopwatch.ElapsedMilliseconds);
                     sightingsService.StoreSightings(result.Data);
 
                     sendSightingsService.SendToKustobsar(result.Data);

@@ -28,7 +28,7 @@ namespace Artportalen.Sample.Scheduling
 
             HttpResponseMessage response = client.PostAsync(this.GetKustobsarUri(), httpContent).Result;
 
-            logger.Info("SendToKustObsar response: {0} {1}", response.StatusCode, response.ReasonPhrase);
+            Console.WriteLine("SendToKustObsar response: {0} {1}", response.StatusCode, response.ReasonPhrase);
         }
 
         private Uri GetKustobsarUri()
