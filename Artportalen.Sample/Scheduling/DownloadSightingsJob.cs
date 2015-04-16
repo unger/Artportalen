@@ -38,11 +38,18 @@
                 stopwatch.Start();
                 var result = ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId);
                 stopwatch.Stop();
-
                 Console.WriteLine("Page {0} count {1} [{2}] ({3}ms)", result.Pager.PageIndex, result.Data.Length, lastSightingId, stopwatch.ElapsedMilliseconds);
-                sightingsService.StoreSightings(result.Data);
-                sendSightingsService.SendToKustobsar(result.Data);
 
+                stopwatch.Restart();
+                sightingsService.StoreSightings(result.Data);
+                stopwatch.Stop();
+                Console.WriteLine("Store sightings ({0}ms)", stopwatch.ElapsedMilliseconds);
+
+                stopwatch.Restart();
+                var response = sendSightingsService.SendToKustobsar(result.Data);
+                stopwatch.Stop();
+                Console.WriteLine("Send to Kustobsar [{0} {1}] ({2}ms)", response.StatusCode, response.ReasonPhrase, stopwatch.ElapsedMilliseconds);
+                
                 if (result.Data.Length > 0)
                 {
                     lastSightingId = result.Data[0].SightingId;
@@ -53,11 +60,18 @@
                     stopwatch.Restart();
                     result = ap2SightingsService.GetNextPage(result);
                     stopwatch.Stop();
-
                     Console.WriteLine("Page {0} count {1} [{2}] ({3}ms)", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId, stopwatch.ElapsedMilliseconds);
-                    sightingsService.StoreSightings(result.Data);
 
-                    sendSightingsService.SendToKustobsar(result.Data);
+                    stopwatch.Restart();
+                    sightingsService.StoreSightings(result.Data);
+                    stopwatch.Stop();
+                    Console.WriteLine("Store sightings ({0}ms)", stopwatch.ElapsedMilliseconds);
+
+                    stopwatch.Restart();
+                    response = sendSightingsService.SendToKustobsar(result.Data);
+                    stopwatch.Stop();
+
+                    Console.WriteLine("Send to Kustobsar [{0} {1}] ({2}ms)", response.StatusCode, response.ReasonPhrase, stopwatch.ElapsedMilliseconds);
                 }
             }
             catch (Exception e)

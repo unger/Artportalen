@@ -17,18 +17,14 @@ namespace Artportalen.Sample.Scheduling
 
     public class SendSightingsService
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-
-        public void SendToKustobsar(IEnumerable<Sighting> sightings)
+        public HttpResponseMessage SendToKustobsar(IEnumerable<Sighting> sightings)
         {
             var client = new HttpClient();
 
             var httpContent = new StringContent(new JavaScriptSerializer().Serialize(new { sightings }));
             httpContent.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
 
-            HttpResponseMessage response = client.PostAsync(this.GetKustobsarUri(), httpContent).Result;
-
-            Console.WriteLine("SendToKustObsar response: {0} {1}", response.StatusCode, response.ReasonPhrase);
+            return client.PostAsync(this.GetKustobsarUri(), httpContent).Result;
         }
 
         private Uri GetKustobsarUri()
