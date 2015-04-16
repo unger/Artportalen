@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
     using System.Web.Mvc;
 
@@ -22,9 +23,17 @@
             this.sightingService = sightingService;
         }
 
-        public ActionResult Index()
+        public ActionResult Index(string datum, string rrkkod, string sort)
         {
-            return this.View(this.sightingService.GetSightings(DateTime.Today));
+            DateTime date;
+            if (!DateTime.TryParse(datum, out date))
+            {
+                date = DateTime.Today;
+            }
+
+            var sightings = this.sightingService.GetSightings(date);
+
+            return this.View(sightings);
         }
 
         [HttpPost]
