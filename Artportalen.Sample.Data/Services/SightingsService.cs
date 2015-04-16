@@ -2,17 +2,39 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.SqlTypes;
     using System.Linq;
+    using System.Reflection;
 
     using Artportalen.Response;
     using Artportalen.Sample.Data.Model;
 
     using NHibernate.Linq;
 
+    using NLog;
+
     using SafeMapper;
 
     public class SightingsService
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+
+        private PropertyInfo[] sightingProperties;
+
+        private PropertyInfo[] SightingProperties
+        {
+            get
+            {
+                if (this.sightingProperties == null)
+                {
+                    this.sightingProperties =
+                        typeof(Sighting).GetProperties().Where(p => p.PropertyType == typeof(string)).ToArray();
+                }
+
+                return this.sightingProperties;
+            }
+        }
+
         public IEnumerable<SightingDto> GetSightings(DateTime date)
         {
             var nextDate = date.AddDays(1);
@@ -31,6 +53,8 @@
 
             foreach (var sighting in sightings)
             {
+                this.VerifyStringLengths(sighting);
+
                 var taxonDto = SafeMap.Convert<Sighting, TaxonDto>(sighting);
                 var siteDto = SafeMap.Convert<Sighting, SiteDto>(sighting);
                 var sightingDto = SafeMap.Convert<Sighting, SightingDto>(sighting);
@@ -112,6 +136,22 @@
                 }
 
                 session.Flush();
+            }
+        }
+
+        private void VerifyStringLengths(Sighting sighting)
+        {
+            foreach (var prop in this.SightingProperties)
+            {
+                var value = prop.GetValue(sighting) as string;
+                if (value != null)
+                {
+                    if (value.Length > 255 && prop.Name != "PublicComment")
+                    {
+                        logger.Error("SightingId: {0} String value will be truncated property: {1} value: '{2}'", sighting.SightingId, prop.Name, value.Length);
+                        prop.SetValue(sighting, value.Substring(0, 254));
+                    }
+                }
             }
         }
     }

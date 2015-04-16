@@ -1,17 +1,15 @@
 ﻿namespace Artportalen.Sample.Scheduling
 {
     using System;
-    using System.Net.Mail;
+    using System.Diagnostics;
 
     using AppHarbor;
 
     using Artportalen.Helpers;
     using Artportalen.Model;
-    using Artportalen.Sample.Data;
     using Artportalen.Sample.Data.Services;
 
     using NLog;
-    using NLog.Internal;
 
     using Quartz;
 
@@ -24,6 +22,7 @@
         public void Execute(IJobExecutionContext jobContext)
         {
             var sightingsService = new SightingsService();
+            var sendSightingsService = new SendSightingsService();
 
             ConsoleMirror.Initialize();
 
@@ -35,10 +34,14 @@
 
             try
             {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
                 var result = ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId);
+                stopwatch.Stop();
 
-                Console.WriteLine("Page {0} count {1} [{2}]", result.Pager.PageIndex, result.Data.Length, lastSightingId);
+                Console.WriteLine("Page {0} count {1} [{2}] ({3}ms)", result.Pager.PageIndex, result.Data.Length, lastSightingId, stopwatch.ElapsedMilliseconds);
                 sightingsService.StoreSightings(result.Data);
+                sendSightingsService.SendToKustobsar(result.Data);
 
                 if (result.Data.Length > 0)
                 {
@@ -47,9 +50,14 @@
 
                 while (result.Pager.HasNextPage)
                 {
+                    stopwatch.Restart();
                     result = ap2SightingsService.GetNextPage(result);
-                    Console.WriteLine("Page {0} count {1} [{2}]", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId);
+                    stopwatch.Stop();
+
+                    Console.WriteLine("Page {0} count {1} [{2}] ({3}ms", result.Pager.PageIndex, result.Data.Length, result.Query.LastSightingId, stopwatch.ElapsedMilliseconds);
                     sightingsService.StoreSightings(result.Data);
+
+                    sendSightingsService.SendToKustobsar(result.Data);
                 }
             }
             catch (Exception e)

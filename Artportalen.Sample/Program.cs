@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Artportalen.Sample
+﻿namespace Artportalen.Sample
 {
+    using System;
     using System.Configuration;
 
     using Artportalen.Sample.Scheduling;

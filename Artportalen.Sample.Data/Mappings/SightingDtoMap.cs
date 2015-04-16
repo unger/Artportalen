@@ -23,7 +23,7 @@
             this.Map(x => x.EndTime);
             this.Map(x => x.UnsureDetermination);
             this.Map(x => x.NotRecovered);
-            this.Map(x => x.PublicComment);
+            this.Map(x => x.PublicComment).Length(int.MaxValue);
 
             this.References(x => x.Taxon, "TaxonId").Not.LazyLoad();
             this.References(x => x.Site, "SiteId").Not.LazyLoad();
