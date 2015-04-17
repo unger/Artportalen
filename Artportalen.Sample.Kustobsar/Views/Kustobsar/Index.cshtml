@@ -1,5 +1,4 @@
-﻿@using MightyLittleGeodesy.Positions
-@model IEnumerable<Artportalen.Sample.Data.Model.SightingDto>
+﻿@model IEnumerable<Artportalen.Sample.Data.Model.SightingDto>
 @{
     Layout = null;
 }<?xml version='1.0' encoding='ISO-8859-1' ?>
@@ -23,7 +22,7 @@
 <startdat>@sighting.StartDate.ToString("yyyy-MM-dd")</startdat>
 <slutdat>@sighting.EndDate.ToString("yyyy-MM-dd")</slutdat>
 <starttid>@sighting.StartTime</starttid>
-<sluttid>@sighting.EndDate</sluttid>
+<sluttid>@sighting.EndTime</sluttid>
 <personer>@sighting.SightingObservers</personer>
 <kommentar>@sighting.PublicComment</kommentar>
 <obsid>@sighting.SightingId</obsid>

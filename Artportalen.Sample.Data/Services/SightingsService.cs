@@ -53,6 +53,11 @@
 
             foreach (var sighting in sightings)
             {
+                if (sighting.SightingObservers != null)
+                {
+                    sighting.SightingObservers = sighting.SightingObservers.Trim();
+                }
+
                 this.VerifyStringLengths(sighting);
 
                 var taxonDto = SafeMap.Convert<Sighting, TaxonDto>(sighting);
