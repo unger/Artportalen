@@ -41,5 +41,7 @@
         public virtual string PublicComment { get; set; }
 
         public virtual DateTime? Updated { get; set; }
+
+        public virtual string Source { get; set; }
     }
 }

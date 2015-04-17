@@ -142,7 +142,9 @@
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/{0}", id));
             this.AddSessionAuthorizationHeader(request, authToken);
 
-            return this.Execute<Sighting>(request).Value;
+            var sighting = this.Execute<Sighting>(request).Value;
+            this.SetSightingSource(sighting);
+            return sighting;
         }
 
         public SightingsResponse Sightings(SightingsQuery query, AuthorizeToken authToken)
@@ -153,6 +155,11 @@
 
             var response = this.Execute<SightingsResponse>(request).Value;
             response.Query = query;
+
+            foreach (var sighting in response.Data)
+            {
+                this.SetSightingSource(sighting);
+            }
 
             return response;
         }
@@ -324,6 +331,11 @@
                              select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
             return string.Join("&", properties.ToArray());
+        }
+
+        private void SetSightingSource(Sighting sighting)
+        {
+            sighting.Source = new Uri(BaseAddress).Host;
         }
     }
 }

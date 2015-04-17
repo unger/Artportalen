@@ -77,5 +77,7 @@
         public int? MaxHeight { get; set; }
 
         public string PublicComment { get; set; }
+
+        public string Source { get; set; }
     }
 }
