@@ -26,21 +26,19 @@
             if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
                 throw new Exception(string.Format(
-                    "Remote server returned {0} {1}\n\n [{2}]\n\n {3}",
+                    "Remote server returned {0} {1}\n\n [{2}]",
                     (int)response.StatusCode,
                     response.ReasonPhrase,
-                    response.RequestMessage.RequestUri,
-                    content));
+                    response.RequestMessage.RequestUri));
             }
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new AuthenticationException(string.Format(
-                    "Remote server returned {0} {1}\n\n [{2}]\n\n {3}",
+                    "Remote server returned {0} {1}\n\n [{2}]",
                     (int)response.StatusCode,
                     response.ReasonPhrase,
-                    response.RequestMessage.RequestUri,
-                    content));
+                    response.RequestMessage.RequestUri));
             }
 
             if (content != null)
@@ -57,12 +55,11 @@
                 catch (Exception e)
                 {
                     throw new Exception(string.Format(
-                        "Remote server returned {0} {1}\n\n [{2}]\n\n {3}\n {4}", 
+                        "Remote server returned {0} {1}\n\n [{2}]\n\n {3}", 
                         (int)response.StatusCode, 
                         response.ReasonPhrase, 
                         response.RequestMessage.RequestUri,
-                        e.Message,
-                        content));
+                        e.Message));
                 }
              }
 
