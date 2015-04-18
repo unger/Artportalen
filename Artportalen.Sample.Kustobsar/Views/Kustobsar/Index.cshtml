@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Artportalen.Sample.Data.Model.SightingDto>
+﻿@model IEnumerable<Artportalen.Sample.Kustobsar.Models.KustobsarSighting>
 @{
     Layout = null;
 }<?xml version='1.0' encoding='ISO-8859-1' ?>
@@ -6,31 +6,31 @@
 @foreach (var sighting in Model)
 {
 <observation>
-<artid>@sighting.Taxon.TaxonId</artid>
-<svensktnamn>@sighting.Taxon.CommonName</svensktnamn>
-<engelsktnamn></engelsktnamn>
-<vetnamn>@sighting.Taxon.ScientificName</vetnamn>
+<artid>@sighting.TaxonId</artid>
+<svensktnamn>@sighting.CommonName</svensktnamn>
+<engelsktnamn>@sighting.EnglishName</engelsktnamn>
+<vetnamn>@sighting.ScientificName</vetnamn>
 <unsure></unsure>
-<attribut>@sighting.Quantity</attribut>
+<attribut>@sighting.Attribute</attribut>
 <antal>@sighting.Quantity</antal>
-<lokal>@sighting.Site.SiteName, @sighting.Site.Landskap</lokal>
-<lokalid>@sighting.Site.SiteId</lokalid>
-<xkoord>@sighting.Site.SiteXCoord</xkoord>
-<ykoord>@sighting.Site.SiteYCoord</ykoord>
-<rrkkod>10</rrkkod>
+<lokal>@sighting.Site</lokal>
+<lokalid>@sighting.SiteId</lokalid>
+<xkoord>@sighting.SiteXCoord</xkoord>
+<ykoord>@sighting.SiteYCoord</ykoord>
+<rrkkod>@sighting.RrkKod</rrkkod>
 <datum></datum>
-<startdat>@sighting.StartDate.ToString("yyyy-MM-dd")</startdat>
-<slutdat>@sighting.EndDate.ToString("yyyy-MM-dd")</slutdat>
+<startdat>@sighting.StartDate</startdat>
+<slutdat>@sighting.EndDate</slutdat>
 <starttid>@sighting.StartTime</starttid>
 <sluttid>@sighting.EndTime</sluttid>
 <personer>@sighting.SightingObservers</personer>
 <kommentar>@sighting.PublicComment</kommentar>
 <obsid>@sighting.SightingId</obsid>
 <obsida></obsida>
-<hasmedia></hasmedia>
+<hasmedia>@sighting.HasMedia</hasmedia>
 <fyndtyp>3</fyndtyp>
-<regionalstatus>2</regionalstatus>
-<rapportmall></rapportmall>
+<regionalstatus>@sighting.RegionalStatus</regionalstatus>
+<rapportmall>@sighting.ReportTemplate</rapportmall>
 <kalla>formular</kalla>
 </observation>
 }

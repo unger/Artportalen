@@ -49,6 +49,10 @@
     <Reference Include="MightyLittleGeodesy">
       <HintPath>..\Lib\MightyLittleGeodesy\MightyLittleGeodesy.dll</HintPath>
     </Reference>
+    <Reference Include="SafeMapper, Version=1.1.89.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SafeMapper.1.1.89.0\lib\net45\SafeMapper.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -99,6 +103,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Logic\KustobsarSightingFactory.cs" />
+    <Compile Include="Models\KustobsarSighting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -128,7 +134,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

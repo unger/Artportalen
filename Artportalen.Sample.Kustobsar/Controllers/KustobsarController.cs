@@ -8,6 +8,7 @@
 
     using Artportalen.Response;
     using Artportalen.Sample.Data.Services;
+    using Artportalen.Sample.Kustobsar.Logic;
 
     public class KustobsarController : Controller
     {
@@ -33,7 +34,9 @@
 
             var sightings = this.sightingService.GetSightings(date);
 
-            return this.View(sightings);
+            var kustobsarSightings = sightings.Select(KustobsarSightingFactory.Create);
+
+            return this.View(kustobsarSightings);
         }
 
         [HttpPost]
