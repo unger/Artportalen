@@ -14,7 +14,7 @@
     <RootNamespace>Artportalen.Sample.Kustobsar</RootNamespace>
     <AssemblyName>Artportalen.Sample.Kustobsar</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -150,7 +150,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>50856</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:50856/</IISUrl>
+          <IISUrl>http://kustobsarapi</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
