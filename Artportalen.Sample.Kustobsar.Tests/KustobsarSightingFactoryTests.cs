@@ -110,6 +110,20 @@ namespace Artportalen.Sample.Kustobsar.Tests
             return sighting.Quantity;
         }
 
+        [TestCase("13:37", Result = "13:37")]
+        [TestCase("13:37:00", Result = "13:37")]
+        public string TestStartTime(string startTime)
+        {
+            var sighting =
+                KustobsarSightingFactory.Create(
+                    new SightingDto
+                    {
+                        StartTime = startTime,
+                    });
+
+            return sighting.StartTime;
+        }
+
 
     }
 }

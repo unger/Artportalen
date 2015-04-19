@@ -27,8 +27,8 @@
                                        Quantity = sighting.Quantity.ToString(CultureInfo.InvariantCulture),
                                        StartDate = sighting.StartDate.ToString("yyyy-MM-dd"),
                                        EndDate = sighting.EndDate.ToString("yyyy-MM-dd"),
-                                       StartTime = sighting.StartTime,
-                                       EndTime = sighting.EndTime,
+                                       StartTime = StripTime(sighting.StartTime),
+                                       EndTime = StripTime(sighting.EndTime),
                                        SightingObservers = sighting.SightingObservers,
                                        PublicComment = sighting.PublicComment,
                                        RegionalStatus = "2",
@@ -55,6 +55,16 @@
 
 
             return kustSighting;
+        }
+
+        private static string StripTime(string startTime)
+        {
+            if (startTime != null && startTime.Length == 8 && startTime.EndsWith(":00"))
+            {
+                return startTime.Substring(0, 5);
+            }
+
+            return startTime;
         }
 
         private static int GetRrkKod(SiteDto site)
