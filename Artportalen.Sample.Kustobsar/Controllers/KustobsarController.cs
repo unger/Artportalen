@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
-    using System.Security.Cryptography.X509Certificates;
     using System.Web.Mvc;
 
     using Artportalen.Response;
@@ -43,44 +42,6 @@
             return this.View(kustobsarSightings);
         }
 
-        private Comparison<KustobsarSighting> GetComparison(string rrksort, string sort, string sortorder)
-        {
-            Comparison<KustobsarSighting> sortFunc;
-
-            switch (sort)
-            {
-                case "2":
-                    sortFunc =
-                        (x, y) =>
-                        sortorder == "desc"
-                            ? string.Compare(y.SiteXCoord, x.SiteXCoord, StringComparison.Ordinal)
-                            : string.Compare(x.SiteXCoord, y.SiteXCoord, StringComparison.Ordinal);
-                    break;
-                case "4":
-                    sortFunc =
-                        (x, y) =>
-                        sortorder == "desc"
-                            ? y.SightingId.CompareTo(x.SightingId)
-                            : x.SightingId.CompareTo(y.SightingId);
-                    break;
-                default:
-                    sortFunc =
-                        (x, y) => sortorder == "desc" ? y.TaxonId.CompareTo(x.TaxonId) : x.TaxonId.CompareTo(y.TaxonId);
-                    break;
-            }
-
-            if (string.IsNullOrEmpty(rrksort))
-            {
-                return sortFunc;
-            }
-
-            return
-                (x, y) =>
-                rrksort == "desc"
-                    ? y.RrkKod.CompareTo(x.RrkKod) == 0 ? sortFunc(x, y) : y.RrkKod.CompareTo(x.RrkKod)
-                    : x.RrkKod.CompareTo(y.RrkKod) == 0 ? sortFunc(x, y) : x.RrkKod.CompareTo(y.RrkKod);
-        }
-
         [HttpPost]
         public ActionResult Sightings(IEnumerable<Sighting> sightings)
         {
@@ -97,6 +58,44 @@
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        private Comparison<KustobsarSighting> GetComparison(string rrksort, string sort, string order)
+        {
+            Comparison<KustobsarSighting> sortFunc;
+
+            switch (sort)
+            {
+                case "2":
+                    sortFunc =
+                        (x, y) =>
+                        order == "desc"
+                            ? string.Compare(y.SiteXCoord, x.SiteXCoord, StringComparison.Ordinal)
+                            : string.Compare(x.SiteXCoord, y.SiteXCoord, StringComparison.Ordinal);
+                    break;
+                case "4":
+                    sortFunc =
+                        (x, y) =>
+                        order == "desc"
+                            ? y.SightingId.CompareTo(x.SightingId)
+                            : x.SightingId.CompareTo(y.SightingId);
+                    break;
+                default:
+                    sortFunc =
+                        (x, y) => order == "desc" ? y.TaxonId.CompareTo(x.TaxonId) : x.TaxonId.CompareTo(y.TaxonId);
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(rrksort))
+            {
+                return sortFunc;
+            }
+
+            return
+                (x, y) =>
+                rrksort == "desc"
+                    ? y.RrkKod.CompareTo(x.RrkKod) == 0 ? sortFunc(x, y) : y.RrkKod.CompareTo(x.RrkKod)
+                    : x.RrkKod.CompareTo(y.RrkKod) == 0 ? sortFunc(x, y) : x.RrkKod.CompareTo(y.RrkKod);
         }
     }
 }
