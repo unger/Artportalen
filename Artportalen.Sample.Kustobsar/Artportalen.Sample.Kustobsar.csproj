@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="Logic\KustobsarSightingFactory.cs" />
     <Compile Include="Models\KustobsarSighting.cs" />
+    <Compile Include="Models\SortField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Security.Cryptography.X509Certificates;
     using System.Web.Mvc;
 
     using Artportalen.Helpers;
@@ -41,9 +42,11 @@
 
             var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create).ToList();
 
-            kustobsarSightings.Sort(this.GetComparison(rrksort, sort, sortorder));
+            //kustobsarSightings.Sort(this.GetComparison(rrksort, sort, sortorder));
 
-            return this.View(kustobsarSightings);
+            var orderedSightings = this.OrderSightings(kustobsarSightings, rrksort, sort, sortorder).ToList();
+
+            return this.View(orderedSightings);
         }
 
         [HttpPost]
@@ -62,6 +65,54 @@
             }
 
             return new HttpStatusCodeResult(HttpStatusCode.OK);
+        }
+
+        private IOrderedEnumerable<KustobsarSighting> OrderSightings(List<KustobsarSighting> kustobsarSightings, string rrksort, string sort, string sortorder)
+        {
+            var sortProperties = new List<SortField<KustobsarSighting, object>>();
+
+            if (!string.IsNullOrEmpty(rrksort))
+            {
+                sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.RrkKod, rrksort == "desc"));
+            }
+
+            switch (sort)
+            {
+                case "2":
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SiteXCoord, sortorder == "desc"));
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SortOrder, sortorder == "desc"));
+                    break;
+                case "4":
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SightingId, sortorder == "desc"));
+                    break;
+                default:
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SortOrder, sortorder == "desc"));
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.TaxonId, sortorder == "desc"));
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SiteXCoord, sortorder == "desc"));
+                    break;
+            }
+
+            IOrderedEnumerable<KustobsarSighting> orderedSightings = null;
+
+            for (int i = 0; i < sortProperties.Count; i++)
+            {
+                var sortField = sortProperties[i];
+
+                if (sortField.Descending)
+                {
+                    orderedSightings = i == 0
+                                        ? kustobsarSightings.OrderByDescending(sortField.PropertyFunc)
+                                        : orderedSightings.ThenByDescending(sortField.PropertyFunc);
+                }
+                else
+                {
+                    orderedSightings = i == 0
+                                        ? kustobsarSightings.OrderBy(sortField.PropertyFunc)
+                                        : orderedSightings.ThenBy(sortField.PropertyFunc);
+                }
+            }
+
+            return orderedSightings;
         }
 
         private Comparison<KustobsarSighting> GetComparison(string rrksort, string sort, string order)

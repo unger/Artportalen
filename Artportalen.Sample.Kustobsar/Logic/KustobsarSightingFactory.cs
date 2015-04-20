@@ -1,5 +1,6 @@
 ﻿namespace Artportalen.Sample.Kustobsar.Logic
 {
+    using System;
     using System.Globalization;
     using System.Linq;
 
@@ -47,8 +48,8 @@
             {
                 kustSighting.Site = this.GetSiteName(sighting.Site);
                 kustSighting.SiteId = sighting.Site.SiteId.ToString(CultureInfo.InvariantCulture);
-                kustSighting.SiteXCoord = sighting.Site.SiteXCoord.ToString(CultureInfo.InvariantCulture);
-                kustSighting.SiteYCoord = sighting.Site.SiteYCoord.ToString(CultureInfo.InvariantCulture);
+                kustSighting.SiteXCoord = Math.Min(sighting.Site.SiteXCoord, sighting.Site.SiteYCoord).ToString(CultureInfo.InvariantCulture);
+                kustSighting.SiteYCoord = Math.Max(sighting.Site.SiteXCoord, sighting.Site.SiteYCoord).ToString(CultureInfo.InvariantCulture);
                 kustSighting.RrkKod = this.GetRrkKod(sighting.Site);
             }
 
