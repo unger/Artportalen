@@ -109,6 +109,12 @@
                     }
                     else
                     {
+                        if (string.IsNullOrEmpty(taxonDto.EnglishName) && taxon.EnglishName != taxonDto.EnglishName)
+                        {
+                            taxon.EnglishName = taxonDto.EnglishName;
+                        }
+
+                        session.Update(taxon);
                         taxonDtos[key] = taxon;
                     }
                 }
@@ -124,6 +130,31 @@
                     }
                     else
                     {
+                        if (string.IsNullOrEmpty(siteDto.SiteName) && site.SiteName != siteDto.SiteName)
+                        {
+                            site.SiteName = siteDto.SiteName;
+                        }
+
+                        if (string.IsNullOrEmpty(siteDto.Kommun) && site.Kommun != siteDto.Kommun)
+                        {
+                            site.Kommun = siteDto.Kommun;
+                        }
+
+                        if (string.IsNullOrEmpty(siteDto.Landskap) && site.Landskap != siteDto.Landskap)
+                        {
+                            site.Landskap = siteDto.Landskap;
+                        }
+
+                        if (string.IsNullOrEmpty(siteDto.Forsamling) && site.Forsamling != siteDto.Forsamling)
+                        {
+                            site.Forsamling = siteDto.Forsamling;
+                        }
+
+                        site.SiteXCoord = siteDto.SiteXCoord;
+                        site.SiteYCoord = siteDto.SiteYCoord;
+
+                        session.Update(site);
+
                         siteDtos[key] = site;
                     }
                 }
