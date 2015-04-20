@@ -6,6 +6,7 @@
     using System.Net;
     using System.Web.Mvc;
 
+    using Artportalen.Helpers;
     using Artportalen.Response;
     using Artportalen.Sample.Data.Services;
     using Artportalen.Sample.Kustobsar.Logic;
@@ -15,14 +16,17 @@
     {
         private readonly SightingsService sightingService;
 
+        private readonly KustobsarSightingFactory kustobsarSightingsFactory;
+
         public KustobsarController()
-            : this(new SightingsService())
+            : this(new SightingsService(), new KustobsarSightingFactory(new AttributeCalculator()))
         {
         }
 
-        public KustobsarController(SightingsService sightingService)
+        public KustobsarController(SightingsService sightingService, KustobsarSightingFactory kustobsarSightingsFactory)
         {
             this.sightingService = sightingService;
+            this.kustobsarSightingsFactory = kustobsarSightingsFactory;
         }
 
         public ActionResult Index(string datum, string rrksort, string rrkkod, string sort, string sortorder)
@@ -35,7 +39,7 @@
 
             var sightings = this.sightingService.GetSightings(date);
 
-            var kustobsarSightings = sightings.Select(KustobsarSightingFactory.Create).ToList();
+            var kustobsarSightings = sightings.Select(this.kustobsarSightingsFactory.Create).ToList();
 
             kustobsarSightings.Sort(this.GetComparison(rrksort, sort, sortorder));
 

@@ -12,6 +12,14 @@
 
         public string CommonName { get; set; }
 
+        public string EnglishName { get; set; }
+
+        public int SiteId { get; set; }
+
+        public string SiteName { get; set; }
+
+        public int Accuracy { get; set; }
+
         public string Lan { get; set; }
 
         public string Forsamling { get; set; }
@@ -58,12 +66,6 @@
 
         public int? GenderId { get; set; }
 
-        public int SiteId { get; set; }
-
-        public string SiteName { get; set; }
-
-        public int Accuracy { get; set; }
-
         public bool UnsureDetermination { get; set; }
 
         public bool NotRecovered { get; set; }
@@ -77,6 +79,8 @@
         public int? MaxHeight { get; set; }
 
         public string PublicComment { get; set; }
+
+        public string HasMedia { get; set; }
 
         public string Source { get; set; }
     }

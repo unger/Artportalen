@@ -64,6 +64,11 @@
                 var siteDto = SafeMap.Convert<Sighting, SiteDto>(sighting);
                 var sightingDto = SafeMap.Convert<Sighting, SightingDto>(sighting);
 
+                if (taxonDto.TaxonId == 0)
+                {
+                    taxonDto.TaxonId = this.FindTaxonIdByName(taxonDto.ScientificName);
+                }
+
                 // Taxons
                 if (!taxonDtos.ContainsKey(taxonDto.TaxonId))
                 {
@@ -141,6 +146,21 @@
                 }
 
                 session.Flush();
+            }
+        }
+
+        private int FindTaxonIdByName(string scientificName)
+        {
+            using (var session = NHibernateConfiguration.GetSession())
+            {
+                var result = session.Query<TaxonInfo>().FirstOrDefault(x => x.ScientificName == scientificName);
+
+                if (result != null)
+                {
+                    return result.TaxonId;
+                }
+
+                return 0;
             }
         }
 

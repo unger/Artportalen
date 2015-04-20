@@ -62,6 +62,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mappings\TaxonInfoMap.cs" />
+    <Compile Include="Model\TaxonInfo.cs" />
     <Compile Include="NHibernateConfiguration.cs" />
     <Compile Include="Mappings\SightingDtoMap.cs" />
     <Compile Include="Mappings\SiteDtoMap.cs" />

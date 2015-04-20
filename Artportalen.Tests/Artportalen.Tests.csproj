@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Ap2ClientTests.cs" />
+    <Compile Include="AttributeCalculatorTests.cs" />
     <Compile Include="Fakes\FakeHttpMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\PagerTests.cs" />

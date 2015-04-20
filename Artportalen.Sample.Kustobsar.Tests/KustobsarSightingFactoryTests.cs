@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Artportalen.Sample.Kustobsar.Tests
 {
+    using Artportalen.Helpers;
     using Artportalen.Model;
     using Artportalen.Sample.Data.Model;
     using Artportalen.Sample.Kustobsar.Logic;
@@ -15,11 +16,19 @@ namespace Artportalen.Sample.Kustobsar.Tests
     [TestFixture]
     public class KustobsarSightingFactoryTests
     {
+        private KustobsarSightingFactory kustobsarSightingFactory;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this.kustobsarSightingFactory = new KustobsarSightingFactory(new AttributeCalculator());
+        }
+
         [TestCase(1234, Result = 1234)]
         public int TestTaxonId(int taxonId)
         {
             var sighting =
-                KustobsarSightingFactory.Create(
+                this.kustobsarSightingFactory.Create(
                     new SightingDto
                     {
                         Taxon = new TaxonDto
@@ -35,7 +44,7 @@ namespace Artportalen.Sample.Kustobsar.Tests
         public string TestCommonName(string commonName)
         {
             var sighting =
-                KustobsarSightingFactory.Create(
+                this.kustobsarSightingFactory.Create(
                     new SightingDto
                     {
                         Taxon = new TaxonDto
@@ -51,7 +60,7 @@ namespace Artportalen.Sample.Kustobsar.Tests
         public string TestScientificName(string scientificName)
         {
             var sighting =
-                KustobsarSightingFactory.Create(
+                this.kustobsarSightingFactory.Create(
                     new SightingDto
                     {
                         Taxon = new TaxonDto
@@ -67,7 +76,7 @@ namespace Artportalen.Sample.Kustobsar.Tests
         public string TestEnglishName(string englishName)
         {
             var sighting =
-                KustobsarSightingFactory.Create(
+                this.kustobsarSightingFactory.Create(
                     new SightingDto
                     {
                         Taxon = new TaxonDto
@@ -79,29 +88,11 @@ namespace Artportalen.Sample.Kustobsar.Tests
             return sighting.EnglishName;
         }
 
-        [TestCase(0, null, null, null, Result = "- ex")]
-        [TestCase(1, null, null, null, Result = "1 ex")]
-        //[TestCase(1, (int)StageEnum.Adult, null, null, Result = "1 ad")]
-        public string TestAttribute(int quantity, int? stageId, int? genderId, int? activityId)
-        {
-            var sighting =
-                KustobsarSightingFactory.Create(
-                    new SightingDto
-                        {
-                            Quantity = quantity,
-                            StageId = stageId,
-                            GenderId = genderId,
-                            ActivityId = activityId
-                        });
-
-            return sighting.Attribute;
-        }
-
         [TestCase(1, Result = "1")]
         public string TestQuantity(int quantity)
         {
             var sighting =
-                KustobsarSightingFactory.Create(
+                this.kustobsarSightingFactory.Create(
                     new SightingDto
                     {
                         Quantity = quantity,
@@ -110,12 +101,30 @@ namespace Artportalen.Sample.Kustobsar.Tests
             return sighting.Quantity;
         }
 
+        [TestCase(0, null, null, null, Result = "- ex")]
+        [TestCase(1, null, null, null, Result = "1 ex")]
+        [TestCase(1, (int)StageEnum.Adult, null, null, Result = "1 ad")]
+        public string TestAttribute(int quantity, int? stageId, int? genderId, int? activityId)
+        {
+            var sighting =
+                this.kustobsarSightingFactory.Create(
+                    new SightingDto
+                    {
+                        Quantity = quantity,
+                        StageId = stageId,
+                        GenderId = genderId,
+                        ActivityId = activityId
+                    });
+
+            return sighting.Attribute;
+        }
+
         [TestCase("13:37", Result = "13:37")]
         [TestCase("13:37:00", Result = "13:37")]
         public string TestStartTime(string startTime)
         {
             var sighting =
-                KustobsarSightingFactory.Create(
+                this.kustobsarSightingFactory.Create(
                     new SightingDto
                     {
                         StartTime = startTime,
@@ -123,7 +132,5 @@ namespace Artportalen.Sample.Kustobsar.Tests
 
             return sighting.StartTime;
         }
-
-
     }
 }
