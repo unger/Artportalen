@@ -39,7 +39,7 @@
                 kustSighting.CommonName = sighting.Taxon.CommonName;
                 kustSighting.ScientificName = sighting.Taxon.ScientificName;
                 kustSighting.EnglishName = sighting.Taxon.EnglishName;
-                kustSighting.SortOrder = sighting.Taxon.SortOrder;
+                kustSighting.SortOrder = sighting.Taxon.SortOrder ?? 0;
                 kustSighting.RegionalStatus = this.GetRegionalStatus(sighting.Taxon.Prefix);
             }
 

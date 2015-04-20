@@ -44,6 +44,6 @@
 
         public string HasMedia { get; set; }
 
-        public int? SortOrder { get; set; }
+        public int SortOrder { get; set; }
     }
 }
