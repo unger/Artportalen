@@ -13,7 +13,7 @@
 
     public class Ap2Client
     {
-        private const string BaseAddress = "https://test.artportalen.se/";
+        private const string BaseAddress = "https://www.artportalen.se/";
 
         private readonly HttpClient httpClient;
 

@@ -30,6 +30,13 @@
 
             Console.WriteLine(DateTimeOffset.Now);
 
+            var schedEnabled = System.Configuration.ConfigurationManager.AppSettings["SchedulingEnabled"];
+            if (schedEnabled != "true")
+            {
+                Console.WriteLine("Scheduling disabled");
+                return;
+            }
+
             var ap2Client = new Ap2Client(System.Configuration.ConfigurationManager.AppSettings["Ap2AccessKey"]);
             var authManager = new Ap2AuthManager(System.Configuration.ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
             var ap2SightingsService = new Ap2SightingsService(ap2Client, authManager);
