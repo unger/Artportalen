@@ -86,7 +86,13 @@
                     break;
                 default:
                     sortFunc =
-                        (x, y) => order == "desc" ? y.TaxonId.CompareTo(x.TaxonId) : x.TaxonId.CompareTo(y.TaxonId);
+                        (x, y) => order == "desc" 
+                            ? y.TaxonId.CompareTo(x.SortOrder) == 0 
+                                ? y.TaxonId.CompareTo(x.TaxonId)
+                                : y.TaxonId.CompareTo(x.SortOrder)
+                            : x.TaxonId.CompareTo(y.SortOrder) == 0
+                                ? x.TaxonId.CompareTo(y.TaxonId)
+                                : x.TaxonId.CompareTo(y.SortOrder);
                     break;
             }
 

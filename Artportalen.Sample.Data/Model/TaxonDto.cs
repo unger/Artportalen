@@ -14,6 +14,10 @@
 
         public virtual string Author { get; set; }
 
+        public virtual int? SortOrder { get; set; }
+
+        public virtual int? Prefix { get; set; }
+
         public virtual DateTime? Updated { get; set; }
     }
 }

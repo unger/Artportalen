@@ -29,7 +29,6 @@
                                        EndTime = this.StripTime(sighting.EndTime),
                                        SightingObservers = sighting.SightingObservers,
                                        PublicComment = sighting.PublicComment,
-                                       RegionalStatus = "2",
                                        ReportTemplate = string.Empty,
                                        HasMedia = string.Empty,
                                    };
@@ -40,6 +39,8 @@
                 kustSighting.CommonName = sighting.Taxon.CommonName;
                 kustSighting.ScientificName = sighting.Taxon.ScientificName;
                 kustSighting.EnglishName = sighting.Taxon.EnglishName;
+                kustSighting.SortOrder = sighting.Taxon.SortOrder;
+                kustSighting.RegionalStatus = this.GetRegionalStatus(sighting.Taxon.Prefix);
             }
 
             if (sighting.Site != null)
@@ -52,6 +53,38 @@
             }
 
             return kustSighting;
+        }
+
+        private string GetRegionalStatus(int? prefix)
+        {
+            if (!prefix.HasValue)
+            {
+                return "2";
+            }
+
+            switch (prefix.Value)
+            {
+                case 0:
+                    return "8";
+                case 1:
+                    return "7";
+                case 2:
+                    return "6";
+                case 3:
+                    return "5";
+                case 4:
+                    return "4";
+                case 5:
+                    return "3";
+                case 6:
+                case 7:
+                case 8:
+                    return "2";
+                case 9:
+                    return "1";
+            }
+
+            return "2";
         }
 
         private string StripTime(string startTime)

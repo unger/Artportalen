@@ -13,6 +13,8 @@
             this.Map(x => x.EnglishName);
             this.Map(x => x.ScientificName);
             this.Map(x => x.Author);
+            this.Map(x => x.SortOrder);
+            this.Map(x => x.Prefix);
 
             this.Version(x => x.Updated).CustomType("Timestamp").Nullable();
         }

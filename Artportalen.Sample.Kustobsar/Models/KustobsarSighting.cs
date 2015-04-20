@@ -43,5 +43,7 @@
         public string ReportTemplate { get; set; }
 
         public string HasMedia { get; set; }
+
+        public int? SortOrder { get; set; }
     }
 }
