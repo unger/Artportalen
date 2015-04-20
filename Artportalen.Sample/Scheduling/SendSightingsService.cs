@@ -13,6 +13,8 @@ namespace Artportalen.Sample.Scheduling
 
     using Artportalen.Response;
 
+    using Newtonsoft.Json;
+
     using NLog;
 
     public class SendSightingsService
@@ -21,7 +23,9 @@ namespace Artportalen.Sample.Scheduling
         {
             var client = new HttpClient();
 
-            var httpContent = new StringContent(new JavaScriptSerializer().Serialize(new { sightings }));
+            var content = JsonConvert.SerializeObject(new { sightings = sightings });
+
+            var httpContent = new StringContent(content);
             httpContent.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
 
             return client.PostAsync(this.GetKustobsarUri(), httpContent).Result;

@@ -66,7 +66,7 @@
 
                 if (taxonDto.TaxonId == 0)
                 {
-                    taxonDto.TaxonId = this.FindTaxonIdByName(taxonDto.ScientificName);
+                    taxonDto.TaxonId = this.FindTaxonIdByName(taxonDto.ScientificName, taxonDto.CommonName, taxonDto.EnglishName);
                 }
 
                 // Taxons
@@ -180,11 +180,11 @@
             }
         }
 
-        private int FindTaxonIdByName(string scientificName)
+        private int FindTaxonIdByName(string scientificName, string commonName, string englishName)
         {
             using (var session = NHibernateConfiguration.GetSession())
             {
-                var result = session.Query<TaxonInfo>().FirstOrDefault(x => x.ScientificName == scientificName);
+                var result = session.Query<TaxonInfo>().FirstOrDefault(x => x.ScientificName == scientificName || x.CommonName == commonName || x.EnglishName == englishName);
 
                 if (result != null)
                 {
