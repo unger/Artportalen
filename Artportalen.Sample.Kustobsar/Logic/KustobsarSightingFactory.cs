@@ -48,7 +48,7 @@
                 kustSighting.Site = this.GetSiteName(sighting.Site);
                 kustSighting.SiteId = sighting.Site.SiteId.ToString(CultureInfo.InvariantCulture);
                 kustSighting.SiteXCoord = sighting.Site.SiteXCoord.ToString(CultureInfo.InvariantCulture);
-                kustSighting.SiteYCoord = sighting.Site.SiteXCoord.ToString(CultureInfo.InvariantCulture);
+                kustSighting.SiteYCoord = sighting.Site.SiteYCoord.ToString(CultureInfo.InvariantCulture);
                 kustSighting.RrkKod = this.GetRrkKod(sighting.Site);
             }
 
@@ -106,7 +106,7 @@
                 return 8;
             }
 
-            if (gbgKommuner.Contains(site.Kommun))
+            if (site.Landskap == "Västergötland" || gbgKommuner.Contains(site.Kommun))
             {
                 return 9;
             }
