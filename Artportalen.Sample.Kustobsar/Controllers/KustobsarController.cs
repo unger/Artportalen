@@ -39,7 +39,7 @@
 
             var sightings = this.sightingService.GetSightings(date);
 
-            var kustobsarSightings = sightings.Select(this.kustobsarSightingsFactory.Create).ToList();
+            var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create).ToList();
 
             kustobsarSightings.Sort(this.GetComparison(rrksort, sort, sortorder));
 
