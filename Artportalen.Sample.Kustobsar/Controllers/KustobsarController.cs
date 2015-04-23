@@ -40,9 +40,7 @@
 
             var sightings = this.sightingService.GetSightings(date);
 
-            var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create).ToList();
-
-            //kustobsarSightings.Sort(this.GetComparison(rrksort, sort, sortorder));
+            var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create).Where(k => k.RrkKod != 0).ToList();
 
             var orderedSightings = this.OrderSightings(kustobsarSightings, rrksort, sort, sortorder).ToList();
 
@@ -113,50 +111,6 @@
             }
 
             return orderedSightings;
-        }
-
-        private Comparison<KustobsarSighting> GetComparison(string rrksort, string sort, string order)
-        {
-            Comparison<KustobsarSighting> sortFunc;
-
-            switch (sort)
-            {
-                case "2":
-                    sortFunc =
-                        (x, y) =>
-                        order == "desc"
-                            ? string.Compare(y.SiteXCoord, x.SiteXCoord, StringComparison.Ordinal)
-                            : string.Compare(x.SiteXCoord, y.SiteXCoord, StringComparison.Ordinal);
-                    break;
-                case "4":
-                    sortFunc =
-                        (x, y) =>
-                        order == "desc"
-                            ? y.SightingId.CompareTo(x.SightingId)
-                            : x.SightingId.CompareTo(y.SightingId);
-                    break;
-                default:
-                    sortFunc =
-                        (x, y) => order == "desc"
-                            ? y.SortOrder.CompareTo(x.SortOrder) == 0 
-                                ? y.TaxonId.CompareTo(x.TaxonId)
-                                : y.SortOrder.CompareTo(x.SortOrder)
-                            : x.SortOrder.CompareTo(y.SortOrder) == 0
-                                ? x.TaxonId.CompareTo(y.TaxonId)
-                                : x.SortOrder.CompareTo(y.SortOrder);
-                    break;
-            }
-
-            if (string.IsNullOrEmpty(rrksort))
-            {
-                return sortFunc;
-            }
-
-            return
-                (x, y) =>
-                rrksort == "desc"
-                    ? y.RrkKod.CompareTo(x.RrkKod) == 0 ? sortFunc(x, y) : y.RrkKod.CompareTo(x.RrkKod)
-                    : x.RrkKod.CompareTo(y.RrkKod) == 0 ? sortFunc(x, y) : x.RrkKod.CompareTo(y.RrkKod);
         }
     }
 }
