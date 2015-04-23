@@ -129,7 +129,7 @@
         {
             switch (landskap)
             {
-                case "Västegötland":
+                case "Västergötland":
                     return "Vg";
                 case "Halland":
                     return "Hl";
