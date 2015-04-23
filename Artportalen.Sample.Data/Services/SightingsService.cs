@@ -109,7 +109,7 @@
                     }
                     else
                     {
-                        if (string.IsNullOrEmpty(taxonDto.EnglishName) && taxon.EnglishName != taxonDto.EnglishName)
+                        if (!string.IsNullOrEmpty(taxonDto.EnglishName) && taxon.EnglishName != taxonDto.EnglishName)
                         {
                             taxon.EnglishName = taxonDto.EnglishName;
                         }
@@ -130,22 +130,22 @@
                     }
                     else
                     {
-                        if (string.IsNullOrEmpty(siteDto.SiteName) && site.SiteName != siteDto.SiteName)
+                        if (!string.IsNullOrEmpty(siteDto.SiteName) && site.SiteName != siteDto.SiteName)
                         {
                             site.SiteName = siteDto.SiteName;
                         }
 
-                        if (string.IsNullOrEmpty(siteDto.Kommun) && site.Kommun != siteDto.Kommun)
+                        if (!string.IsNullOrEmpty(siteDto.Kommun) && site.Kommun != siteDto.Kommun)
                         {
                             site.Kommun = siteDto.Kommun;
                         }
 
-                        if (string.IsNullOrEmpty(siteDto.Landskap) && site.Landskap != siteDto.Landskap)
+                        if (!string.IsNullOrEmpty(siteDto.Landskap) && site.Landskap != siteDto.Landskap)
                         {
                             site.Landskap = siteDto.Landskap;
                         }
 
-                        if (string.IsNullOrEmpty(siteDto.Forsamling) && site.Forsamling != siteDto.Forsamling)
+                        if (!string.IsNullOrEmpty(siteDto.Forsamling) && site.Forsamling != siteDto.Forsamling)
                         {
                             site.Forsamling = siteDto.Forsamling;
                         }
