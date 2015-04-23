@@ -40,7 +40,12 @@
 
             var sightings = this.sightingService.GetSightings(date);
 
-            var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create).Where(k => k.RrkKod != 0).ToList();
+            var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create);
+
+            int kod;
+            kustobsarSightings = int.TryParse(rrkkod, out kod) 
+                ? kustobsarSightings.Where(k => k.RrkKod == kod) 
+                : kustobsarSightings.Where(k => k.RrkKod != 0);
 
             var orderedSightings = this.OrderSightings(kustobsarSightings, rrksort, sort, sortorder).ToList();
 
@@ -65,7 +70,7 @@
             return new HttpStatusCodeResult(HttpStatusCode.OK);
         }
 
-        private IOrderedEnumerable<KustobsarSighting> OrderSightings(List<KustobsarSighting> kustobsarSightings, string rrksort, string sort, string sortorder)
+        private IEnumerable<KustobsarSighting> OrderSightings(IEnumerable<KustobsarSighting> kustobsarSightings, string rrksort, string sort, string sortorder)
         {
             var sortProperties = new List<SortField<KustobsarSighting, object>>();
 
@@ -99,13 +104,13 @@
                 if (sortField.Descending)
                 {
                     orderedSightings = i == 0
-                                        ? kustobsarSightings.OrderByDescending(sortField.PropertyFunc)
+                                        ? kustobsarSightings.ToList().OrderByDescending(sortField.PropertyFunc)
                                         : orderedSightings.ThenByDescending(sortField.PropertyFunc);
                 }
                 else
                 {
                     orderedSightings = i == 0
-                                        ? kustobsarSightings.OrderBy(sortField.PropertyFunc)
+                                        ? kustobsarSightings.ToList().OrderBy(sortField.PropertyFunc)
                                         : orderedSightings.ThenBy(sortField.PropertyFunc);
                 }
             }
