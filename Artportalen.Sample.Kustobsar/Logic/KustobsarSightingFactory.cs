@@ -107,14 +107,19 @@
                 return 8;
             }
 
-            if (site.Landskap == "Västergötland" || gbgKommuner.Contains(site.Kommun))
-            {
-                return 9;
-            }
-
             if (site.Landskap == "Bohuslän")
             {
+                if (gbgKommuner.Contains(site.Kommun))
+                {
+                    return 9;
+                }
+
                 return 10;
+            }
+
+            if (site.Landskap == "Västergötland" && gbgKommuner.Contains(site.Kommun))
+            {
+                return 9;
             }
 
             return 0;
