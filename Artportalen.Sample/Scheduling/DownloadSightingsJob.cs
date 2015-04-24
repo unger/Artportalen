@@ -44,16 +44,19 @@
             try
             {
                 var result = this.HandleSightings(null, ap2SightingsService, sightingsService, sendSightingsService);
-                
+                long? sightingId = null;
                 if (result.Data.Length > 0)
                 {
-                    lastSightingId = result.Data[0].SightingId;
+                    sightingId = result.Data[0].SightingId;
                 }
 
-                while (result.Pager.HasNextPage)
+                var pageCount = result.Pager.PageCount;
+                for (int i = 0; i < pageCount; i++)
                 {
                     result = this.HandleSightings(result, ap2SightingsService, sightingsService, sendSightingsService);
                 }
+
+                lastSightingId = sightingId;
             }
             catch (Exception e)
             {
@@ -85,7 +88,13 @@
                 ? ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId) 
                 : ap2SightingsService.GetNextPage(lastResponse);
             stopwatch.Stop();
-            Console.WriteLine("Page {0} count {1} [{2}] ({3}ms)", result.Pager.PageIndex, result.Data.Length, lastSightingId, stopwatch.ElapsedMilliseconds);
+            Console.WriteLine(
+                "Page {0} items {1}-{2} [{3}] ({4}ms)", 
+                result.Pager.PageIndex,
+                ((result.Pager.PageIndex - 1) * result.Pager.PageSize) + 1,
+                ((result.Pager.PageIndex - 1) * result.Pager.PageSize) + result.Data.Length,
+                lastSightingId, 
+                stopwatch.ElapsedMilliseconds);
 
             stopwatch.Restart();
             var saveStatus = "Success";

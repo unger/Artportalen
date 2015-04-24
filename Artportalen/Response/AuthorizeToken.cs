@@ -19,7 +19,7 @@
         {
             get
             {
-                return this.createDateTime.AddSeconds(this.expires_in);
+                return this.createDateTime.AddMilliseconds(this.expires_in);
             }
         }
 
