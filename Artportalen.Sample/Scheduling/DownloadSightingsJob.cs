@@ -44,18 +44,15 @@
             try
             {
                 var result = this.HandleSightings(null, ap2SightingsService, sightingsService, sendSightingsService);
-                long? sightingId = null;
                 if (result.Data.Length > 0)
                 {
-                    sightingId = result.Data[0].SightingId;
+                    lastSightingId = result.Data[0].SightingId;
                 }
 
                 while (result.Data.Length == result.Pager.PageSize)
                 {
                     result = this.HandleSightings(result, ap2SightingsService, sightingsService, sendSightingsService);
                 }
-
-                lastSightingId = sightingId;
             }
             catch (Exception e)
             {
