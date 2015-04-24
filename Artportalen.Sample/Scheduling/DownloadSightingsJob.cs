@@ -50,8 +50,7 @@
                     sightingId = result.Data[0].SightingId;
                 }
 
-                var pageCount = result.Pager.PageCount;
-                for (int i = 0; i < pageCount; i++)
+                while (result.Data.Length == result.Pager.PageSize)
                 {
                     result = this.HandleSightings(result, ap2SightingsService, sightingsService, sendSightingsService);
                 }
