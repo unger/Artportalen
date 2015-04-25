@@ -42,6 +42,8 @@
             var authManager = new Ap2AuthManager(System.Configuration.ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
             var ap2SightingsService = new Ap2SightingsService(ap2Client, authManager);
 
+            lastSightingId = sightingsService.GetLastSightingId();
+
             try
             {
                 var result = this.HandleSightings(null, ap2SightingsService, sightingsService, sendSightingsService);

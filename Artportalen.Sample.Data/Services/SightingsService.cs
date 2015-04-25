@@ -45,6 +45,20 @@
             }
         }
 
+        public long? GetLastSightingId()
+        {
+            using (var session = NHibernateConfiguration.GetSession())
+            {
+                var sighting = session.Query<SightingDto>().OrderByDescending(x => x.SightingId).FirstOrDefault();
+                if (sighting != null)
+                {
+                    return sighting.SightingId;
+                }
+
+                return null;
+            }
+        }
+
         public void StoreSightings(IEnumerable<Sighting> sightings)
         {
             var siteDtos = new Dictionary<long, SiteDto>();
