@@ -92,13 +92,14 @@
             if (result.Data.Length > 0)
             {
                 Console.WriteLine(
-                    "{5} Page {0} items {1}-{2} [{3}] ({4}ms)",
+                    "{5} Page {0} items {1}-{2} [{3}] total:{6} ({4}ms)",
                     result.Pager.PageIndex,
                     ((result.Pager.PageIndex - 1) * result.Pager.PageSize) + 1,
                     ((result.Pager.PageIndex - 1) * result.Pager.PageSize) + result.Data.Length,
                     onlyLatest ? lastSightingId.ToString() : string.Empty,
                     stopwatch.ElapsedMilliseconds,
-                    onlyLatest ? "Latest" : "Todays");
+                    onlyLatest ? "Latest" : "Todays",
+                    result.Pager.TotalCount);
             }
             else
             {
