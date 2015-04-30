@@ -65,6 +65,8 @@
             var taxonDtos = new Dictionary<int, TaxonDto>();
             var sightingDtos = new List<SightingDto>();
 
+            this.RemoveOldSightings();
+
             foreach (var sighting in sightings)
             {
                 if (sighting.SightingObservers != null)
@@ -222,6 +224,14 @@
                         prop.SetValue(sighting, value.Substring(0, 254));
                     }
                 }
+            }
+        }
+
+        private void RemoveOldSightings()
+        {
+            using (var session = NHibernateConfiguration.GetSession())
+            {
+                session.CreateQuery("delete from SightingDto d where d.StartDate < :startDate").SetDateTime("startDate", DateTime.Today.AddDays(-4)).ExecuteUpdate();
             }
         }
     }

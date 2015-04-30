@@ -39,16 +39,24 @@
 
             var sightings = this.sightingService.GetSightings(date);
 
-            var kustobsarSightings = sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create);
+            var kustobsarSightings =
+                sightings.Where(s => s.Taxon.TaxonId != 0).Select(this.kustobsarSightingsFactory.Create);
 
             int kod;
-            kustobsarSightings = int.TryParse(rrkkod, out kod) 
-                ? kustobsarSightings.Where(k => k.RrkKod == kod) 
-                : kustobsarSightings.Where(k => k.RrkKod != 0);
+            kustobsarSightings = int.TryParse(rrkkod, out kod)
+                                     ? kustobsarSightings.Where(k => k.RrkKod == kod)
+                                     : kustobsarSightings.Where(k => k.RrkKod != 0);
 
             var orderedSightings = this.OrderSightings(kustobsarSightings, rrksort, sort, sortorder).ToList();
 
             return this.View(orderedSightings);
+        }
+
+        public ActionResult TestRemove()
+        {
+            this.sightingService.StoreSightings(new Sighting[0]);
+
+            return new ContentResult { Content = "test" };
         }
 
         [HttpPost]
