@@ -8,6 +8,9 @@
     using Artportalen.Sample.Data.Model;
     using Artportalen.Sample.Kustobsar.Models;
 
+    using SwedishCoordinates;
+    using SwedishCoordinates.Positions;
+
     public class KustobsarSightingFactory
     {
         private readonly AttributeCalculator attributeCalculator;
@@ -46,14 +49,24 @@
 
             if (sighting.Site != null)
             {
+                var rt90 = this.GetRt90Position(sighting.Site.SiteXCoord, sighting.Site.SiteYCoord);
+
                 kustSighting.Site = this.GetSiteName(sighting.Site);
                 kustSighting.SiteId = sighting.Site.SiteId.ToString(CultureInfo.InvariantCulture);
-                kustSighting.SiteXCoord = Math.Min(sighting.Site.SiteXCoord, sighting.Site.SiteYCoord).ToString(CultureInfo.InvariantCulture);
-                kustSighting.SiteYCoord = Math.Max(sighting.Site.SiteXCoord, sighting.Site.SiteYCoord).ToString(CultureInfo.InvariantCulture);
+                kustSighting.SiteXCoord = Math.Round(Math.Min(rt90.Latitude, rt90.Longitude), 0, MidpointRounding.AwayFromZero).ToString(CultureInfo.InvariantCulture);
+                kustSighting.SiteYCoord = Math.Round(Math.Max(rt90.Latitude, rt90.Longitude), 0, MidpointRounding.AwayFromZero).ToString(CultureInfo.InvariantCulture);
                 kustSighting.RrkKod = this.GetRrkKod(sighting.Site);
             }
 
             return kustSighting;
+        }
+
+        private RT90Position GetRt90Position(int siteXCoord, int siteYCoord)
+        {
+            var minCoord = Math.Min(siteXCoord, siteYCoord);
+            var maxCoord = Math.Max(siteXCoord, siteYCoord);
+            var webMerc = new WebMercatorPosition(maxCoord, minCoord);
+            return PositionConverter.ToRt90(webMerc);
         }
 
         private string GetRegionalStatus(int? prefix)

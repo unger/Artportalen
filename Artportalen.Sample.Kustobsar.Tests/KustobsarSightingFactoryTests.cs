@@ -13,6 +13,8 @@ namespace Artportalen.Sample.Kustobsar.Tests
 
     using NUnit.Framework;
 
+    using SwedishCoordinates;
+
     [TestFixture]
     public class KustobsarSightingFactoryTests
     {
