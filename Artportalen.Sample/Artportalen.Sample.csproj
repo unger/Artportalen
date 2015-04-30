@@ -73,7 +73,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduling\DownloadSightingsJob.cs" />
+    <Compile Include="Scheduling\DownloadTodaysSightingsJob.cs" />
+    <Compile Include="Scheduling\DownloadLatestSightingsJob.cs" />
+    <Compile Include="Scheduling\DownloadSightingsService.cs" />
     <Compile Include="Scheduling\SendSightingsService.cs" />
   </ItemGroup>
   <ItemGroup>

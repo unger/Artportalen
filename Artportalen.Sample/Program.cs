@@ -25,11 +25,13 @@
             var scheduler = schedulerFactory.GetScheduler();
             scheduler.Start();
 
-            var job = JobBuilder.Create<DownloadSightingsJob>().Build();
+            var latestjob = JobBuilder.Create<DownloadLatestSightingsJob>().Build();
+            var todaysjob = JobBuilder.Create<DownloadTodaysSightingsJob>().Build();
+            var latestTrigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval).RepeatForever()).Build();
+            var todaysTrigger = TriggerBuilder.Create().StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(120))).WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval * 3).RepeatForever()).Build();
 
-            var trigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval).RepeatForever()).Build();
-
-            scheduler.ScheduleJob(job, trigger);
+            scheduler.ScheduleJob(latestjob, latestTrigger);
+            scheduler.ScheduleJob(todaysjob, todaysTrigger);
         }
     }
 }

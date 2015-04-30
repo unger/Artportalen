@@ -14,29 +14,28 @@
 
     using NLog;
 
-    using Quartz;
-
-    public class DownloadSightingsJob : IJob
+    public class DownloadSightingsService
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-
+        
         private static long? lastSightingId;
 
-        public void Execute(IJobExecutionContext jobContext)
+        public void DownloadAllTodaysSightings()
         {
+            this.DownloadSightings(false);
+        }
+
+        public void DownloadLatestAddedSightings()
+        {
+            this.DownloadSightings(true);
+        }
+
+        private void DownloadSightings(bool onlyLatest)
+        {
+            ConsoleMirror.Initialize();
+            
             var sightingsService = new SightingsService();
             var sendSightingsService = new SendSightingsService();
-
-            ConsoleMirror.Initialize();
-
-            Console.WriteLine(DateTimeOffset.Now);
-
-            var schedEnabled = System.Configuration.ConfigurationManager.AppSettings["SchedulingEnabled"];
-            if (schedEnabled != "true")
-            {
-                Console.WriteLine("Scheduling disabled");
-                return;
-            }
 
             var ap2Client = new Ap2Client(System.Configuration.ConfigurationManager.AppSettings["Ap2AccessKey"]);
             var authManager = new Ap2AuthManager(System.Configuration.ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
@@ -46,7 +45,7 @@
 
             try
             {
-                var result = this.HandleSightings(null, ap2SightingsService, sightingsService, sendSightingsService);
+                var result = this.HandleSightings(null, ap2SightingsService, sightingsService, sendSightingsService, onlyLatest);
                 if (result.Data.Length > 0)
                 {
                     lastSightingId = result.Data[0].SightingId;
@@ -54,7 +53,7 @@
 
                 while (result.Data.Length == result.Pager.PageSize)
                 {
-                    result = this.HandleSightings(result, ap2SightingsService, sightingsService, sendSightingsService);
+                    result = this.HandleSightings(result, ap2SightingsService, sightingsService, sendSightingsService, onlyLatest);
                     Thread.Sleep(5000);
                 }
             }
@@ -78,29 +77,32 @@
             }
         }
 
-        private SightingsResponse HandleSightings(SightingsResponse lastResponse, Ap2SightingsService ap2SightingsService, SightingsService sightingsService, SendSightingsService sendSightingsService)
+        private SightingsResponse HandleSightings(SightingsResponse lastResponse, Ap2SightingsService ap2SightingsService, SightingsService sightingsService, SendSightingsService sendSightingsService, bool onlyLatest)
         {
             HttpResponseMessage sendResponse = null;
             var stopwatch = new Stopwatch();
 
             stopwatch.Start();
-            var result = lastResponse == null 
-                ? ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId) 
+            var result = lastResponse == null
+                ? onlyLatest 
+                    ? ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId)
+                    : ap2SightingsService.GetTodaysSightings(SpeciesGroupEnum.Fåglar)
                 : ap2SightingsService.GetNextPage(lastResponse);
             stopwatch.Stop();
             if (result.Data.Length > 0)
             {
                 Console.WriteLine(
-                    "Page {0} items {1}-{2} [{3}] ({4}ms)",
+                    "{5} Page {0} items {1}-{2} [{3}] ({4}ms)",
                     result.Pager.PageIndex,
                     ((result.Pager.PageIndex - 1) * result.Pager.PageSize) + 1,
                     ((result.Pager.PageIndex - 1) * result.Pager.PageSize) + result.Data.Length,
-                    lastSightingId,
-                    stopwatch.ElapsedMilliseconds);
+                    onlyLatest ? lastSightingId.ToString() : string.Empty,
+                    stopwatch.ElapsedMilliseconds,
+                    onlyLatest ? "Latest" : "Todays");
             }
             else
             {
-                Console.WriteLine("Page {0} No items returned [{1}] ({2}ms)", result.Pager.PageIndex, lastSightingId, stopwatch.ElapsedMilliseconds);
+                Console.WriteLine("{3} Page {0} No items returned [{1}] ({2}ms)", result.Pager.PageIndex, lastSightingId, stopwatch.ElapsedMilliseconds, onlyLatest ? "Latest" : "Todays");
             }
 
             stopwatch.Restart();
