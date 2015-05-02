@@ -231,7 +231,7 @@
         {
             using (var session = NHibernateConfiguration.GetSession())
             {
-                session.CreateQuery("delete from SightingDto d where d.StartDate < :startDate").SetDateTime("startDate", DateTime.Today.AddDays(-4)).ExecuteUpdate();
+                session.CreateQuery("delete from SightingDto d where d.StartDate < :startDate").SetDateTime("startDate", DateTime.Today.AddDays(-3)).ExecuteUpdate();
             }
         }
     }
