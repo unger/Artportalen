@@ -18,6 +18,7 @@
             this.Map(x => x.Landskap);
             this.Map(x => x.SiteYCoord);
             this.Map(x => x.SiteXCoord);
+            this.Map(x => x.UseCount);
 
             this.Version(x => x.Updated).CustomType("Timestamp").Nullable();
         }

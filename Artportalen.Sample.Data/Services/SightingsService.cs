@@ -175,6 +175,8 @@
                     }
                 }
 
+                var updatedUseCountSites = new Dictionary<long, SiteDto>();
+
                 foreach (var sighting in sightingDtos)
                 {
                     sighting.Taxon = taxonDtos[sighting.Taxon.TaxonId];
@@ -183,6 +185,13 @@
                     var sightingFromDb = session.Get<SightingDto>(sighting.SightingId);
                     if (sightingFromDb == null)
                     {
+                        var site = siteDtos[sighting.Site.SiteId];
+                        site.UseCount = (site.UseCount ?? 0) + 1;
+                        if (!updatedUseCountSites.ContainsKey(site.SiteId))
+                        {
+                            updatedUseCountSites.Add(site.SiteId, site);
+                        }
+
                         session.Save(sighting, sighting.SightingId);
                     }
                     else
@@ -190,6 +199,11 @@
                         session.Delete(sightingFromDb);
                         session.Save(sighting, sighting.SightingId);
                     }
+                }
+
+                foreach (var key in updatedUseCountSites.Keys)
+                {
+                    session.Update(updatedUseCountSites[key]);
                 }
 
                 session.Flush();
