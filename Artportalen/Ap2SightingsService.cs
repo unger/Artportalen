@@ -87,7 +87,7 @@
                 SortField = "SightingId",
                 LastSightingId = lastSightingId,
                 SpeciesGroupId = (int)speciesGroup,
-                CoordinateSystemId = 1,
+                CoordinateSystemId = 19,
             };
         }
     }
