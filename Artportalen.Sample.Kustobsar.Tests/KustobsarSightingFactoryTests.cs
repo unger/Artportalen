@@ -90,8 +90,8 @@ namespace Artportalen.Sample.Kustobsar.Tests
             return sighting.EnglishName;
         }
 
-        [TestCase(1, Result = "1")]
-        public string TestQuantity(int quantity)
+        [TestCase(1, Result = 1)]
+        public int TestQuantity(int quantity)
         {
             var sighting =
                 this.kustobsarSightingFactory.Create(

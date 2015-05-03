@@ -14,7 +14,7 @@
 
         public string Attribute { get; set; }
 
-        public string Quantity { get; set; }
+        public int Quantity { get; set; }
 
         public string Site { get; set; }
 

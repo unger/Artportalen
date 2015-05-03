@@ -26,7 +26,7 @@
                                    {
                                        SightingId = sighting.SightingId,
                                        Attribute = this.attributeCalculator.GetAttribute(sighting.Quantity, sighting.StageId, sighting.GenderId, sighting.ActivityId),
-                                       Quantity = sighting.Quantity.ToString(CultureInfo.InvariantCulture),
+                                       Quantity = sighting.Quantity,
                                        StartDate = sighting.StartDate.ToString("yyyy-MM-dd"),
                                        EndDate = sighting.EndDate.ToString("yyyy-MM-dd"),
                                        StartTime = this.StripTime(sighting.StartTime),
