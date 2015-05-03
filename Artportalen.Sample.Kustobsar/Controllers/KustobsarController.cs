@@ -99,8 +99,8 @@
                     sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SortOrder, sortorder == "desc"));
                     sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.TaxonId, sortorder == "desc"));
                     sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.SiteXCoord, sortorder == "desc"));
-                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.Quantity, sortorder == "desc"));
-                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.StartTime, sortorder == "desc"));
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.Quantity, true));
+                    sortProperties.Add(new SortField<KustobsarSighting, object>(x => x.StartTime, true));
                     break;
             }
 
