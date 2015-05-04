@@ -27,8 +27,8 @@
 
             var latestjob = JobBuilder.Create<DownloadLatestSightingsJob>().Build();
             var todaysjob = JobBuilder.Create<DownloadTodaysSightingsJob>().Build();
-            var latestTrigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval).RepeatForever()).Build();
-            var todaysTrigger = TriggerBuilder.Create().StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(120))).WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval * 3).RepeatForever()).Build();
+            var latestTrigger = TriggerBuilder.Create().StartAt(new DateTimeOffset(DateTime.Now.AddSeconds(120))).WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval).RepeatForever()).Build();
+            var todaysTrigger = TriggerBuilder.Create().WithSimpleSchedule(x => x.WithIntervalInSeconds(checkInterval * 3).RepeatForever()).Build();
 
             scheduler.ScheduleJob(latestjob, latestTrigger);
             scheduler.ScheduleJob(todaysjob, todaysTrigger);

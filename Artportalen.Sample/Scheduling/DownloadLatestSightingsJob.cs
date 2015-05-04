@@ -2,18 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.Net.Http;
-    using System.Threading;
-
-    using AppHarbor;
-
-    using Artportalen.Helpers;
-    using Artportalen.Model;
-    using Artportalen.Response;
-    using Artportalen.Sample.Data.Services;
-
-    using NLog;
 
     using Quartz;
 

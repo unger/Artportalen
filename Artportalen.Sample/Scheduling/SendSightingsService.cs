@@ -19,7 +19,7 @@ namespace Artportalen.Sample.Scheduling
 
     public class SendSightingsService
     {
-        public HttpResponseMessage SendToKustobsar(IEnumerable<Sighting> sightings)
+        public HttpResponseMessage Send(IEnumerable<Sighting> sightings, Uri url)
         {
             var client = new HttpClient();
 
@@ -28,12 +28,7 @@ namespace Artportalen.Sample.Scheduling
             var httpContent = new StringContent(content);
             httpContent.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
 
-            return client.PostAsync(this.GetKustobsarUri(), httpContent).Result;
-        }
-
-        private Uri GetKustobsarUri()
-        {
-            return new Uri(ConfigurationManager.AppSettings["KustobsarSightingsUrl"]);
+            return client.PostAsync(url, httpContent).Result;
         }
     }
 }

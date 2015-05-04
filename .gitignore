@@ -196,3 +196,4 @@ FakesAssemblies/
 *.opt
 Artportalen.Sample/appSettings_local.config
 /coverage
+/Artportalen.Sample.Kustobsar/webconfig

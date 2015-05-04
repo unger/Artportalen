@@ -1,6 +1,8 @@
 ﻿namespace Artportalen.Sample.Scheduling
 {
     using System;
+    using System.Collections.Generic;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Net.Http;
     using System.Threading;
@@ -10,7 +12,6 @@
     using Artportalen.Helpers;
     using Artportalen.Model;
     using Artportalen.Response;
-    using Artportalen.Sample.Data.Services;
 
     using NLog;
 
@@ -33,19 +34,22 @@
         private void DownloadSightings(bool onlyLatest)
         {
             ConsoleMirror.Initialize();
+
+            if (onlyLatest && !lastSightingId.HasValue)
+            {
+                Console.WriteLine("LastSightingId has no value, exiting.");
+                return;
+            }
             
-            var sightingsService = new SightingsService();
             var sendSightingsService = new SendSightingsService();
 
-            var ap2Client = new Ap2Client(System.Configuration.ConfigurationManager.AppSettings["Ap2AccessKey"]);
-            var authManager = new Ap2AuthManager(System.Configuration.ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
+            var ap2Client = new Ap2Client(ConfigurationManager.AppSettings["Ap2AccessKey"]);
+            var authManager = new Ap2AuthManager(ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
             var ap2SightingsService = new Ap2SightingsService(ap2Client, authManager);
-
-            lastSightingId = sightingsService.GetLastSightingId();
 
             try
             {
-                var result = this.HandleSightings(null, ap2SightingsService, sightingsService, sendSightingsService, onlyLatest);
+                var result = this.HandleSightings(null, ap2SightingsService, sendSightingsService, onlyLatest);
                 if (result.Data.Length > 0)
                 {
                     lastSightingId = result.Data[0].SightingId;
@@ -53,7 +57,7 @@
 
                 while (result.Data.Length == result.Pager.PageSize)
                 {
-                    result = this.HandleSightings(result, ap2SightingsService, sightingsService, sendSightingsService, onlyLatest);
+                    result = this.HandleSightings(result, ap2SightingsService, sendSightingsService, onlyLatest);
                     Thread.Sleep(5000);
                 }
             }
@@ -77,7 +81,7 @@
             }
         }
 
-        private SightingsResponse HandleSightings(SightingsResponse lastResponse, Ap2SightingsService ap2SightingsService, SightingsService sightingsService, SendSightingsService sendSightingsService, bool onlyLatest)
+        private SightingsResponse HandleSightings(SightingsResponse lastResponse, Ap2SightingsService ap2SightingsService, SendSightingsService sendSightingsService, bool onlyLatest)
         {
             HttpResponseMessage sendResponse = null;
             var stopwatch = new Stopwatch();
@@ -106,55 +110,72 @@
                 Console.WriteLine("{3} Page {0} No items returned [{1}] ({2}ms)", result.Pager.PageIndex, lastSightingId, stopwatch.ElapsedMilliseconds, onlyLatest ? "Latest" : "Todays");
             }
 
-            stopwatch.Restart();
-            var saveStatus = "Success";
-            try
-            {
-                sightingsService.StoreSightings(result.Data);
-            }
-            catch (Exception saveException)
-            {
-                saveStatus = string.Format("Failed ({0})", saveException.Message);
-            }
-            finally
-            {
-                stopwatch.Stop();
-            }
+            var uris = this.GetSendSightingsUrls();
 
-            Console.WriteLine("Store sightings {0} ({1}ms)", saveStatus, stopwatch.ElapsedMilliseconds);
-
-            stopwatch.Restart();
-            var sendStatus = "Success";
-            try
+            if (uris.Length == 0)
             {
-                sendResponse = sendSightingsService.SendToKustobsar(result.Data);
-            }
-            catch (Exception sendException)
-            {
-                sendStatus = string.Format("Failed ({0})", sendException.Message);
-            }
-            finally
-            {
-                stopwatch.Stop();
-            }
-
-            if (sendResponse != null)
-            {
-                Console.WriteLine(
-                    "Send to Kustobsar {0} [{1} {2}] ({3}ms)",
-                    sendStatus,
-                    (int)sendResponse.StatusCode,
-                    sendResponse.ReasonPhrase,
-                    stopwatch.ElapsedMilliseconds);
+                Console.WriteLine("No external urls defined to send Sightings to");
             }
             else
             {
-                Console.WriteLine(
-                    "Send to Kustobsar Failed [response = null] ({0}ms)",
-                    stopwatch.ElapsedMilliseconds);
+                foreach (var uri in uris)
+                {
+                    stopwatch.Restart();
+                    var sendStatus = "Success";
+                    try
+                    {
+                        sendResponse = sendSightingsService.Send(result.Data, uri);
+                    }
+                    catch (Exception sendException)
+                    {
+                        sendStatus = string.Format("Failed ({0})", sendException.Message);
+                    }
+                    finally
+                    {
+                        stopwatch.Stop();
+                    }
+
+                    if (sendResponse != null)
+                    {
+                        Console.WriteLine(
+                            "Send to '{0}' {1} [{2} {3}] ({4}ms)",
+                            uri,
+                            sendStatus,
+                            (int)sendResponse.StatusCode,
+                            sendResponse.ReasonPhrase,
+                            stopwatch.ElapsedMilliseconds);
+                    }
+                    else
+                    {
+                        Console.WriteLine(
+                            "Send to '{0}' Failed [response = null] ({1}ms)",
+                            uri,
+                            stopwatch.ElapsedMilliseconds);
+                    }
+                }
             }
 
             return result;
+        }
+
+        private Uri[] GetSendSightingsUrls()
+        {
+            var uris = new List<Uri>();
+            var uriStrings = (ConfigurationManager.AppSettings["KustobsarSightingsUrl"] ?? string.Empty).Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var uriString in uriStrings)
+            {
+                try
+                {
+                    var uri = new Uri(uriString);
+                    uris.Add(uri);
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return uris.ToArray();
         }
     }
 }
