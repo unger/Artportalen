@@ -1,5 +1,7 @@
 version: 0.1.{build}
 configuration: Release
+before_build:
+- cmd: nuget restore
 build:
   project: .\Artportalen\Artportalen.csproj
   publish_nuget: true
