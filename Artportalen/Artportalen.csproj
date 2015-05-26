@@ -51,6 +51,7 @@
     <Compile Include="Ap2AuthManager.cs" />
     <Compile Include="Ap2Client.cs" />
     <Compile Include="Ap2SightingsService.cs" />
+    <Compile Include="Ap2TestClient.cs" />
     <Compile Include="Helpers\AttributeCalculator.cs" />
     <Compile Include="Helpers\CacheAuthTokenRepository.cs" />
     <Compile Include="Helpers\IAuthTokenRepository.cs" />

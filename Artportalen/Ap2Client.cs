@@ -13,9 +13,9 @@
 
     public class Ap2Client
     {
-        private const string BaseAddress = "https://www.artportalen.se/";
-
         private readonly HttpClient httpClient;
+
+        private string baseAddress = "https://www.artportalen.se/";
 
         /// <summary>
         /// 
@@ -31,6 +31,20 @@
         public string AccessKey { get; private set; }
 
         public HttpResponseMessage LastResponseMessage { get; private set; }
+
+        protected string BaseAddress
+        {
+            get
+            {
+                return this.baseAddress;
+            }
+
+            set
+            {
+                this.baseAddress = value;
+                this.httpClient.BaseAddress = new Uri(value);
+            }
+        }
 
         public Accuracy[] Accuracies()
         {
@@ -311,7 +325,7 @@
         {
             var client = httpMessageHandler != null ? new HttpClient(httpMessageHandler) : new HttpClient();
 
-            client.BaseAddress = new Uri(BaseAddress);
+            client.BaseAddress = new Uri(this.BaseAddress);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             if (string.IsNullOrEmpty(this.AccessKey))
@@ -335,7 +349,7 @@
 
         private void SetSightingSource(Sighting sighting)
         {
-            sighting.Source = new Uri(BaseAddress).Host;
+            sighting.Source = new Uri(this.BaseAddress).Host;
         }
     }
 }
