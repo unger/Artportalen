@@ -26,19 +26,21 @@
             if (response.StatusCode == HttpStatusCode.InternalServerError)
             {
                 throw new Exception(string.Format(
-                    "Remote server returned {0} {1}\n\n [{2}]",
+                    "Remote server returned {0} {1}\n\n [{2}]\n\n{3}",
                     (int)response.StatusCode,
                     response.ReasonPhrase,
-                    response.RequestMessage.RequestUri));
+                    response.RequestMessage.RequestUri,
+                    content));
             }
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 throw new AuthenticationException(string.Format(
-                    "Remote server returned {0} {1}\n\n [{2}]",
+                    "Remote server returned {0} {1}\n\n [{2}]\n\n{3}",
                     (int)response.StatusCode,
                     response.ReasonPhrase,
-                    response.RequestMessage.RequestUri));
+                    response.RequestMessage.RequestUri,
+                    content));
             }
 
             if (content != null)

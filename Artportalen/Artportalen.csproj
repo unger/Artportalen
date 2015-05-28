@@ -64,6 +64,7 @@
     <Compile Include="Response\AreaDataset.cs" />
     <Compile Include="Response\DeterminationMethod.cs" />
     <Compile Include="Response\DiscoveryMethod.cs" />
+    <Compile Include="Response\Project.cs" />
     <Compile Include="Response\Unit.cs" />
     <Compile Include="Response\Stage.cs" />
     <Compile Include="Response\Gender.cs" />

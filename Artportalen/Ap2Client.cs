@@ -151,6 +151,16 @@
             return response != null ? response.Data : new Gender[0];
         }
 
+        public Project[] Projects(AuthorizeToken authToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/api/projects");
+            this.AddSessionAuthorizationHeader(request, authToken);
+
+            var response = this.Execute<BaseCollection<Project>>(request).Value;
+
+            return response != null ? response.Data : new Project[0];
+        }
+
         public Sighting Sighting(long id, AuthorizeToken authToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, string.Format("/api/sightings/{0}", id));
