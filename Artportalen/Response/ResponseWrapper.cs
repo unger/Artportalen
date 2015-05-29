@@ -4,7 +4,6 @@
     using System.Net;
     using System.Net.Http;
     using System.Security.Authentication;
-    using System.Web;
     using System.Web.Script.Serialization;
 
     public class ResponseWrapper<T> where T : class

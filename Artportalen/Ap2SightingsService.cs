@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Net;
+    using System.Net.Http;
     using System.Security.Authentication;
 
     using Artportalen.Model;
@@ -21,11 +22,19 @@
             this.authManager = authManager;
         }
 
+        public HttpResponseMessage LastResponseMessage
+        {
+            get
+            {
+                return this.ap2Client.LastResponseMessage;
+            }
+        }
+
         public SightingsResponse GetTodaysSightings(SpeciesGroupEnum speciesGroup, long? lastSightingId = null)
         {
             var query = this.GetBaseQuery(speciesGroup, lastSightingId);
 
-            return this.GetSightingsResponse(query);
+            return this.GetSightings(query);
         }
 
         public SightingsResponse GetYesterdaysSightings(SpeciesGroupEnum speciesGroup, long? lastSightingId = null)
@@ -34,7 +43,7 @@
             query.DateFrom = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
             query.DateTo = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
 
-            return this.GetSightingsResponse(query);
+            return this.GetSightings(query);
         }
 
         public SightingsResponse GetLastThreeDaysSightings(SpeciesGroupEnum speciesGroup, long? lastSightingId = null)
@@ -42,7 +51,7 @@
             var query = this.GetBaseQuery(speciesGroup, lastSightingId);
             query.DateFrom = DateTime.Today.AddDays(-2).ToString("yyyy-MM-dd");
 
-            return this.GetSightingsResponse(query);
+            return this.GetSightings(query);
         }
 
         public SightingsResponse GetNextPage(SightingsResponse previousResponse)
@@ -50,10 +59,10 @@
             var query = previousResponse.Query;
             query.PageNumber = previousResponse.Pager.PageIndex + 1;
 
-            return this.GetSightingsResponse(query);
+            return this.GetSightings(query);
         }
 
-        private SightingsResponse GetSightingsResponse(SightingsQuery query)
+        public SightingsResponse GetSightings(SightingsQuery query)
         {
             SightingsResponse result;
             try
