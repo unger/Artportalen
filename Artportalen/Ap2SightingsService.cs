@@ -93,7 +93,7 @@
             {
                 DateFrom = DateTime.Today.ToString("yyyy-MM-dd"),
                 DateTo = DateTime.Today.ToString("yyyy-MM-dd"),
-                SortField = "SightingId",
+                SortField = "RegisterDate",
                 LastSightingId = lastSightingId,
                 SpeciesGroupId = (int)speciesGroup,
                 CoordinateSystemId = 19,
