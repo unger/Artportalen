@@ -75,6 +75,7 @@
     <Compile Include="Scheduling\DownloadTodaysSightingsJob.cs" />
     <Compile Include="Scheduling\DownloadLatestSightingsJob.cs" />
     <Compile Include="Scheduling\DownloadSightingsService.cs" />
+    <Compile Include="Scheduling\SaveResponseHttpMessageHandler.cs" />
     <Compile Include="Scheduling\SendSightingsService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +87,9 @@
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Artportalen\Artportalen.csproj">

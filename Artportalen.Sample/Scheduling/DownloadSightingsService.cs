@@ -43,7 +43,9 @@
             
             var sendSightingsService = new SendSightingsService();
 
-            var ap2Client = new Ap2Client(ConfigurationManager.AppSettings["Ap2AccessKey"]);
+            HttpMessageHandler handler = this.GetMessageHandler();
+
+            var ap2Client = new Ap2Client(ConfigurationManager.AppSettings["Ap2AccessKey"], handler);
             var authManager = new Ap2AuthManager(ConfigurationManager.AppSettings["Ap2BasicAuthToken"], ap2Client, new CacheAuthTokenRepository());
             var ap2SightingsService = new Ap2SightingsService(ap2Client, authManager);
 
@@ -79,6 +81,17 @@
 
                 logger.Error(ConsoleMirror.Captured);
             }
+        }
+
+        private HttpMessageHandler GetMessageHandler()
+        {
+            var saveResponse = System.Configuration.ConfigurationManager.AppSettings["SaveResponseToDisk"];
+            if (saveResponse == "true")
+            {
+                return new SaveResponseHttpMessageHandler();
+            }
+
+            return null;
         }
 
         private SightingsResponse HandleSightings(SightingsResponse lastResponse, Ap2SightingsService ap2SightingsService, SendSightingsService sendSightingsService, bool onlyLatest)

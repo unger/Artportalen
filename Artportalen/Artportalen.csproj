@@ -32,8 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SafeMapper">
-      <HintPath>..\packages\SafeMapper.1.1.89.0\lib\net45\SafeMapper.dll</HintPath>
+    <Reference Include="SafeMapper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=eb6e5d6cfb80aac2, processorArchitecture=MSIL">
+      <HintPath>..\packages\SafeMapper.2.0.112\lib\net45\SafeMapper.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
