@@ -61,6 +61,7 @@
     <Compile Include="Model\MunicipalityFeatureEnum.cs" />
     <Compile Include="Model\ProvinceFeatureEnum.cs" />
     <Compile Include="Model\ProvinceEnum.cs" />
+    <Compile Include="Model\TaxonGroupEnum.cs" />
     <Compile Include="Model\StageEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\SightingsQuery.cs" />

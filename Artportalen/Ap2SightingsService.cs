@@ -30,34 +30,34 @@
             }
         }
 
-        public SightingsResponse GetTodaysSightings(SpeciesGroupEnum speciesGroup, long? lastSightingId = null)
+        public SightingsResponse GetTodaysSightings(TaxonGroupEnum taxonGroup, long? lastSightingId = null)
         {
-            var query = this.GetBaseQuery(speciesGroup, lastSightingId);
-
-            return this.GetSightings(query);
+            return this.GetSightings((int)taxonGroup, DateTime.Today, DateTime.Today, lastSightingId);
         }
 
-        public SightingsResponse GetYesterdaysSightings(SpeciesGroupEnum speciesGroup, long? lastSightingId = null)
+        public SightingsResponse GetYesterdaysSightings(TaxonGroupEnum taxonGroup, long? lastSightingId = null)
         {
-            var query = this.GetBaseQuery(speciesGroup, lastSightingId);
-            query.DateFrom = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
-            query.DateTo = DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd");
-
-            return this.GetSightings(query);
+            return this.GetSightings((int)taxonGroup, DateTime.Today.AddDays(-1), DateTime.Today.AddDays(-1), lastSightingId);
         }
 
-        public SightingsResponse GetLastThreeDaysSightings(SpeciesGroupEnum speciesGroup, long? lastSightingId = null)
+        public SightingsResponse GetLastThreeDaysSightings(TaxonGroupEnum taxonGroup, long? lastSightingId = null)
         {
-            var query = this.GetBaseQuery(speciesGroup, lastSightingId);
-            query.DateFrom = DateTime.Today.AddDays(-2).ToString("yyyy-MM-dd");
-
-            return this.GetSightings(query);
+            return this.GetSightings((int)taxonGroup, DateTime.Today.AddDays(-2), DateTime.Today, lastSightingId);
         }
 
         public SightingsResponse GetNextPage(SightingsResponse previousResponse)
         {
             var query = previousResponse.Query;
             query.PageNumber = previousResponse.Pager.PageIndex + 1;
+
+            return this.GetSightings(query);
+        }
+
+        public SightingsResponse GetSightings(int taxonId, DateTime fromDate, DateTime toDate, long? lastSightingId = null)
+        {
+            var query = this.GetBaseQuery(taxonId, lastSightingId);
+            query.DateFrom = fromDate.ToString("yyyy-MM-dd");
+            query.DateTo = toDate.ToString("yyyy-MM-dd");
 
             return this.GetSightings(query);
         }
@@ -87,7 +87,7 @@
             return result;
         }
 
-        private SightingsQuery GetBaseQuery(SpeciesGroupEnum speciesGroup, long? lastSightingId)
+        private SightingsQuery GetBaseQuery(int? taxonId, long? lastSightingId)
         {
             return new SightingsQuery
             {
@@ -95,7 +95,7 @@
                 DateTo = DateTime.Today.ToString("yyyy-MM-dd"),
                 SortField = "RegisterDate",
                 LastSightingId = lastSightingId,
-                SpeciesGroupId = (int)speciesGroup,
+                TaxonId = taxonId,
                 CoordinateSystemId = 19,
             };
         }

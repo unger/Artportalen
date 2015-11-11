@@ -2,8 +2,6 @@
 {
     public class SightingsQuery
     {
-        public int? SpeciesGroupId { get; set; }
-
         public int? TaxonId { get; set; }
 
         public string DateFrom { get; set; }

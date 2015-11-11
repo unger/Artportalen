@@ -102,8 +102,8 @@
             stopwatch.Start();
             var result = lastResponse == null
                 ? onlyLatest 
-                    ? ap2SightingsService.GetLastThreeDaysSightings(SpeciesGroupEnum.Fåglar, lastSightingId)
-                    : ap2SightingsService.GetTodaysSightings(SpeciesGroupEnum.Fåglar)
+                    ? ap2SightingsService.GetLastThreeDaysSightings(TaxonGroupEnum.Fåglar, lastSightingId)
+                    : ap2SightingsService.GetTodaysSightings(TaxonGroupEnum.Fåglar)
                 : ap2SightingsService.GetNextPage(lastResponse);
             stopwatch.Stop();
             if (result.Data.Length > 0)
