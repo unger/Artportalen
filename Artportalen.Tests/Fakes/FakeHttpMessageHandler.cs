@@ -57,9 +57,9 @@
                                                         ""Comment"": null
                                                         },
                                                         ""SightingObservers"": "" Artur Larsson"",
-                                                        ""StartDate"": ""2015-03-31T00:00:00Z"",
+                                                        ""StartDate"": ""2015-03-31T00:00:00"",
                                                         ""StartTime"": null,
-                                                        ""EndDate"": ""2015-03-31T00:00:00Z"",
+                                                        ""EndDate"": ""2015-03-31T00:00:00"",
                                                         ""EndTime"": null,
                                                         ""TaxonId"": 102971,
                                                         ""Quantity"": 1,
