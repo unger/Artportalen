@@ -2,17 +2,19 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6F78A318-4226-459C-957C-E9FFADF02BBE}</ProjectGuid>
+    <ProjectGuid>{5EA36212-2234-445C-823D-6B5385D7A8AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Artportalen</RootNamespace>
-    <AssemblyName>Artportalen</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>ArtportalenPortable</RootNamespace>
+    <AssemblyName>ArtportalenPortable</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,60 +34,46 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Ap2AuthManager.cs" />
     <Compile Include="Ap2Client.cs" />
     <Compile Include="Ap2SightingsService.cs" />
     <Compile Include="Ap2TestClient.cs" />
     <Compile Include="Helpers\AttributeCalculator.cs" />
-    <Compile Include="Helpers\CacheAuthTokenRepository.cs" />
     <Compile Include="Helpers\IAuthTokenRepository.cs" />
     <Compile Include="Model\ActivityEnum.cs" />
     <Compile Include="Model\GenderEnum.cs" />
     <Compile Include="Model\MunicipalityFeatureEnum.cs" />
-    <Compile Include="Model\ProvinceFeatureEnum.cs" />
     <Compile Include="Model\ProvinceEnum.cs" />
-    <Compile Include="Model\TaxonGroupEnum.cs" />
+    <Compile Include="Model\ProvinceFeatureEnum.cs" />
+    <Compile Include="Model\SpeciesGroupEnum.cs" />
     <Compile Include="Model\StageEnum.cs" />
+    <Compile Include="Model\TaxonGroupEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\SightingsQuery.cs" />
     <Compile Include="Request\SitesQuery.cs" />
-    <Compile Include="Response\AreaDataset.cs" />
-    <Compile Include="Response\DeterminationMethod.cs" />
-    <Compile Include="Response\DiscoveryMethod.cs" />
-    <Compile Include="Response\Project.cs" />
-    <Compile Include="Response\Unit.cs" />
-    <Compile Include="Response\Stage.cs" />
-    <Compile Include="Response\Gender.cs" />
+    <Compile Include="Response\Accuracy.cs" />
     <Compile Include="Response\Activity.cs" />
     <Compile Include="Response\Area.cs" />
+    <Compile Include="Response\AreaDataSet.cs" />
     <Compile Include="Response\AuthorizeToken.cs" />
-    <Compile Include="Response\Accuracy.cs" />
-    <Compile Include="Response\Taxon.cs" />
-    <Compile Include="Response\Site.cs" />
-    <Compile Include="Response\CoordinateSystem.cs" />
-    <Compile Include="Response\SightingsResponse.cs" />
-    <Compile Include="Response\Pager.cs" />
     <Compile Include="Response\BaseCollection.cs" />
+    <Compile Include="Response\CoordinateSystem.cs" />
+    <Compile Include="Response\DeterminationMethod.cs" />
+    <Compile Include="Response\DiscoveryMethod.cs" />
+    <Compile Include="Response\Gender.cs" />
+    <Compile Include="Response\Pager.cs" />
     <Compile Include="Response\PrivateComment.cs" />
+    <Compile Include="Response\Project.cs" />
     <Compile Include="Response\ResponseWrapper.cs" />
     <Compile Include="Response\Sighting.cs" />
+    <Compile Include="Response\SightingsResponse.cs" />
+    <Compile Include="Response\Site.cs" />
     <Compile Include="Response\SpeciesGroup.cs" />
-    <Compile Include="Model\SpeciesGroupEnum.cs" />
+    <Compile Include="Response\Stage.cs" />
+    <Compile Include="Response\Taxon.cs" />
+    <Compile Include="Response\Unit.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

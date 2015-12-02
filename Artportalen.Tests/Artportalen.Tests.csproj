@@ -53,16 +53,16 @@
     <Compile Include="Response\PagerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Artportalen\Artportalen.csproj">
-      <Project>{6F78A318-4226-459C-957C-E9FFADF02BBE}</Project>
-      <Name>Artportalen</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Artportalen\Artportalen.csproj">
+      <Project>{5ea36212-2234-445c-823d-6b5385d7a8ae}</Project>
+      <Name>Artportalen</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

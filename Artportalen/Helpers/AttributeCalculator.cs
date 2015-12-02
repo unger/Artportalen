@@ -1,8 +1,9 @@
-﻿namespace Artportalen.Helpers
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Artportalen.Helpers
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
@@ -125,7 +126,7 @@
         {
             if (typeof (TEnum).GetTypeInfo().IsEnum)
             {
-                if (typeof (TEnum).GetTypeInfo().IsEnumDefined(value))
+                if (Enum.IsDefined(typeof (TEnum), value))
                 {
                     return (TEnum)Enum.Parse(typeof (TEnum), value.ToString());
                 }
@@ -139,7 +140,7 @@
 
         private string GetEnumDisplayShortName(Enum value)
         {
-            FieldInfo fi = value.GetType().GetField(value.ToString());
+            FieldInfo fi = value.GetType().GetRuntimeField(value.ToString());
 
             var attributes =
                 (DisplayAttribute[])fi.GetCustomAttributes(

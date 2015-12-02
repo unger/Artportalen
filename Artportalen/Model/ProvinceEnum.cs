@@ -1,7 +1,7 @@
-﻿namespace Artportalen.Model
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace Artportalen.Model
+{
     public enum ProvinceEnum
     {
         [Display(Name = "", ShortName = "")]Undefined = 0,

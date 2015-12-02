@@ -1,4 +1,6 @@
-﻿namespace Artportalen.Sample.Scheduling
+﻿using Artportalen.Sample.Helpers;
+
+namespace Artportalen.Sample.Scheduling
 {
     using System;
     using System.Collections.Generic;

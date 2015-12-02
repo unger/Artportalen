@@ -1,10 +1,12 @@
-﻿namespace Artportalen.Response
+﻿using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+
+namespace Artportalen.Response
 {
     using System;
     using System.Net;
     using System.Net.Http;
-    using System.Security.Authentication;
-    using System.Web.Script.Serialization;
 
     public class ResponseWrapper<T> where T : class
     {
@@ -34,7 +36,7 @@
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
-                throw new AuthenticationException(string.Format(
+                throw new UnauthorizedAccessException(string.Format(
                     "Remote server returned {0} {1}\n\n [{2}]\n\n{3}",
                     (int)response.StatusCode,
                     response.ReasonPhrase,
@@ -51,7 +53,7 @@
 
                 try
                 {
-                    return new JavaScriptSerializer().Deserialize<T>(content);
+                    return JsonDeserialize<T>(content);
                 }
                 catch (Exception e)
                 {
@@ -65,6 +67,24 @@
              }
 
             return default(T);
+        }
+
+        private TObject JsonDeserialize<TObject>(string content)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(T), new DataContractJsonSerializerSettings { DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:ss") });
+            return (TObject)serializer.ReadObject(ConvertToStream(content));
+        }
+
+        public static Stream ConvertToStream(string content)
+        {
+            var memStream = new MemoryStream();
+            var streamWriter = new StreamWriter(memStream);
+
+            streamWriter.Write(content);
+
+            streamWriter.Flush();
+            memStream.Seek(0, SeekOrigin.Begin);
+            return memStream;
         }
     }
 }

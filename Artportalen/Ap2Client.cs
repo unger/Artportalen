@@ -1,13 +1,13 @@
-﻿namespace Artportalen
+﻿using System.Net;
+using System.Reflection;
+
+namespace Artportalen
 {
     using System;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
-    using System.Security.Authentication;
     using System.Text;
-    using System.Web;
-
     using Artportalen.Request;
     using Artportalen.Response;
 
@@ -320,7 +320,7 @@
         {
             if (!authToken.IsValid)
             {
-                throw new AuthenticationException("AuthorizeToken not valid call Authorize method to authenticate");
+                throw new UnauthorizedAccessException("AuthorizeToken not valid call Authorize method to authenticate");
             }
 
             if (string.IsNullOrEmpty(authToken.access_token))
@@ -350,9 +350,9 @@
 
         private string GetQueryString(object obj)
         {
-            var properties = from p in obj.GetType().GetProperties()
+            var properties = from p in obj.GetType().GetRuntimeProperties()
                              where p.GetValue(obj, null) != null && p.Name != "LastSightingId"
-                             select p.Name + "=" + HttpUtility.UrlEncode(p.GetValue(obj, null).ToString());
+                             select p.Name + "=" + WebUtility.UrlEncode(p.GetValue(obj, null).ToString());
 
             return string.Join("&", properties.ToArray());
         }

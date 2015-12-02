@@ -2,10 +2,7 @@
 {
     using System;
     using System.Linq;
-    using System.Net;
     using System.Net.Http;
-    using System.Security.Authentication;
-
     using Artportalen.Model;
     using Artportalen.Request;
     using Artportalen.Response;
@@ -69,7 +66,7 @@
             {
                 result = this.ap2Client.Sightings(query, this.authManager.GetValidToken());
             }
-            catch (AuthenticationException e)
+            catch (UnauthorizedAccessException e)
             {
                 result = this.ap2Client.Sightings(query, this.authManager.GetNewToken());
             }

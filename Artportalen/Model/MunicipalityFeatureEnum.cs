@@ -1,7 +1,7 @@
-﻿namespace Artportalen.Model
-{
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace Artportalen.Model
+{
     public enum MunicipalityFeatureEnum
     {
         [Display(Name = "")]Undefined = 0,

@@ -1,8 +1,7 @@
-﻿namespace Artportalen.Model
-{
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
+namespace Artportalen.Model
+{
     public enum ActivityEnum
     {
         [Display(Name = "", ShortName = "")]Undefined = 0,

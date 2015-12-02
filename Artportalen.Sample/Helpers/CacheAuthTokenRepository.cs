@@ -1,9 +1,9 @@
-﻿namespace Artportalen.Helpers
+﻿using System.Web;
+using Artportalen.Helpers;
+using Artportalen.Response;
+
+namespace Artportalen.Sample.Helpers
 {
-    using System.Web;
-
-    using Artportalen.Response;
-
     public class CacheAuthTokenRepository : IAuthTokenRepository
     {
         public AuthorizeToken Get(string userName)
