@@ -9,8 +9,6 @@
 
     using Artportalen.Model;
 
-    using SafeMapper;
-
     public class AttributeCalculator
     {
         public int GetQuantity(string attribute)
@@ -22,7 +20,11 @@
 
             if (attribute.Contains(" "))
             {
-                return SafeConvert.ToInt32(attribute.Substring(0, attribute.IndexOf(" ", StringComparison.Ordinal)));
+                int q;
+                if (int.TryParse(attribute.Substring(0, attribute.IndexOf(" ", StringComparison.Ordinal)), out q))
+                {
+                    return q;
+                }
             }
 
             return 0;
@@ -88,9 +90,9 @@
         public string GetAttribute(int quantity, int? stageId, int? genderId, int? activityId)
         {
             var attributes = new List<string>();
-            var stage = SafeMap.Convert<int, StageEnum>(stageId ?? 0);
-            var gender = SafeMap.Convert<int, GenderEnum>(genderId ?? 0);
-            var activity = SafeMap.Convert<int, ActivityEnum>(activityId ?? 0);
+            var stage = ParseEnum<StageEnum>(stageId ?? 0);
+            var gender = ParseEnum<GenderEnum>(genderId ?? 0);
+            var activity = ParseEnum<ActivityEnum>(activityId ?? 0);
 
             attributes.Add(quantity == 0 ? "-" : quantity.ToString(CultureInfo.InvariantCulture));
 
@@ -117,6 +119,22 @@
             }
 
             return string.Join(" ", attributes);
+        }
+
+        private TEnum ParseEnum<TEnum>(int value)
+        {
+            if (typeof (TEnum).GetTypeInfo().IsEnum)
+            {
+                if (typeof (TEnum).GetTypeInfo().IsEnumDefined(value))
+                {
+                    return (TEnum)Enum.Parse(typeof (TEnum), value.ToString());
+                }
+
+                var values = Enum.GetValues(typeof (TEnum));
+                return (TEnum)values.GetValue(0);
+            }
+
+            throw new InvalidOperationException("Only enum types supported");
         }
 
         private string GetEnumDisplayShortName(Enum value)

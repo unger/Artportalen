@@ -20,6 +20,7 @@
         [TestCase(0, null, null, null, Result = "- ex")]
         [TestCase(1, null, null, null, Result = "1 ex")]
         [TestCase(1, (int)StageEnum.Adult, null, null, Result = "1 ad")]
+        [TestCase(1, 99, 99, 99, Result = "1 ex")]
         public string GetAttribute(int quantity, int? stageId, int? genderId, int? activityId)
         {
             return this.attributeCalculator.GetAttribute(quantity, stageId, genderId, activityId);
