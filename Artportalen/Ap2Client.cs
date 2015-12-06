@@ -4,9 +4,13 @@ using System.Reflection;
 namespace Artportalen
 {
     using System;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Net.Http.Headers;
+    using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Json;
     using System.Text;
     using Artportalen.Request;
     using Artportalen.Response;
@@ -169,6 +173,48 @@ namespace Artportalen
             var sighting = this.Execute<Sighting>(request).Value;
             this.SetSightingSource(sighting);
             return sighting;
+        }
+
+        public PostSightingResponse PostSighting(PostSighting sighting, AuthorizeToken authToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "/api/sightings");
+            this.AddSessionAuthorizationHeader(request, authToken);
+
+            // {"CoordNorth":57.77212687663715,"StageId":27,"StartDate":"2013-07-21","ProjectValue":{"Id":1326},"EndDate":"2013-07-21","CoordinateSystemNotationId":4,"Accuracy":100,"SiteName":"Ersvik, Rörö","CoordinateSystemId":10,"ActivityId":0,"TaxonId":201164,"UnsureDetermination":false,"Quantity":15,"CoordEast":11.61051089300866}
+            var str = this.JsonSerialize(sighting);
+            request.Content = new StringContent(str, Encoding.UTF8, "application/json");
+
+            var response = this.Execute<PostSightingResponse>(request);
+            if (response.ResponseMessage.StatusCode == HttpStatusCode.Accepted)
+            {
+                return new PostSightingResponse
+                           {
+                               IsSuccess = true,
+                               ValidationUrl = response.ResponseMessage.Headers.Location,
+                               ValidationId = this.ExtractValidationId(response.ResponseMessage.Headers.Location)
+                           };
+            }
+
+            return response.Value;
+                /*
+                 Return error with validation errors
+                
+                    {"Errors":"Validation error(s) occured while trying to create resource.","SightingValidation":{"NumberOfErrors":1,"StartDateTimeError":null,"EndDateTimeError":null,"TaxonError":null,"QuantityError":null,"CoordinateSystemError":null,"SiteError":"The site is outside of country.","UnitError":null,"StageError":null,"GenderError":null,"ActivityError":null,"ObserversError":null,"ProjectError":null,"DepthHeightError":null,"DataFormatError":null}}                 
+                 */
+        }
+
+        public Sighting VerifySighting(Uri url, AuthorizeToken authToken)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            this.AddSessionAuthorizationHeader(request, authToken);
+
+            var response = this.Execute<Sighting>(request);
+            if (response.ResponseMessage.StatusCode == HttpStatusCode.Created)
+            {
+                return response.Value;
+            }
+
+            return null;
         }
 
         public SightingsResponse Sightings(SightingsQuery query, AuthorizeToken authToken)
@@ -348,18 +394,62 @@ namespace Artportalen
             return client;
         }
 
-        private string GetQueryString(object obj)
+        private IDictionary<string, string> GetQueryParameters(object obj)
         {
             var properties = from p in obj.GetType().GetRuntimeProperties()
                              where p.GetValue(obj, null) != null && p.Name != "LastSightingId"
-                             select p.Name + "=" + WebUtility.UrlEncode(p.GetValue(obj, null).ToString());
+                             select new Tuple<string, string>(p.Name, p.GetValue(obj, null).ToString());
 
-            return string.Join("&", properties.ToArray());
+            return properties.ToDictionary(prop => prop.Item1, prop => prop.Item2);
+        }
+        
+        private string GetQueryString(object obj)
+        {
+            var parameters = this.GetQueryParameters(obj);
+            return string.Join("&", parameters.Select(kvp => WebUtility.UrlEncode(kvp.Key) + "=" + WebUtility.UrlEncode(kvp.Value)));
         }
 
         private void SetSightingSource(Sighting sighting)
         {
             sighting.Source = new Uri(this.BaseAddress).Host;
+        }
+
+        private string JsonSerialize<T>(T obj)
+        {
+            var serializer = new DataContractJsonSerializer(typeof(Dictionary<string, object>), new DataContractJsonSerializerSettings()
+            {
+                UseSimpleDictionaryFormat = true
+            });
+            
+            var properties = from p in obj.GetType().GetRuntimeProperties()
+                             where p.GetValue(obj, null) != null
+                             select new Tuple<string, object>(p.Name, p.GetValue(obj, null));
+
+            var dict = properties.ToDictionary(prop => prop.Item1, prop => prop.Item2);
+            
+            string content;
+            using (var memStream = new MemoryStream())
+            {
+                serializer.WriteObject(memStream, dict);
+                memStream.Seek(0, 0);
+
+                using (var sr = new StreamReader(memStream))
+                {
+                    content = sr.ReadToEnd();
+                }
+            }
+
+            return content;
+        }
+
+        private string ExtractValidationId(Uri location)
+        {
+            if (location != null && location.PathAndQuery.Contains("/"))
+            {
+                return location.PathAndQuery.Substring(location.PathAndQuery.LastIndexOf("/", StringComparison.Ordinal));
+            }
+
+            return null;
         }
     }
 }
