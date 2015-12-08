@@ -44,7 +44,7 @@ namespace Artportalen.Response
                     content));
             }
 
-            if (content != null)
+            if (!string.IsNullOrWhiteSpace(content))
             {
                 if (typeof(T) == typeof(string))
                 {

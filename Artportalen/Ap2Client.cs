@@ -203,6 +203,11 @@ namespace Artportalen
                  */
         }
 
+        public Sighting VerifySighting(string validationId, AuthorizeToken authToken)
+        {
+            return this.VerifySighting(new Uri("https://www.artportalen.se/api/sightings/status/" + validationId), authToken);
+        }
+
         public Sighting VerifySighting(Uri url, AuthorizeToken authToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -446,7 +451,7 @@ namespace Artportalen
         {
             if (location != null && location.PathAndQuery.Contains("/"))
             {
-                return location.PathAndQuery.Substring(location.PathAndQuery.LastIndexOf("/", StringComparison.Ordinal));
+                return location.PathAndQuery.Substring(location.PathAndQuery.LastIndexOf("/", StringComparison.Ordinal) + 1);
             }
 
             return null;
