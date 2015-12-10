@@ -71,7 +71,7 @@ namespace Artportalen.Response
 
         private TObject JsonDeserialize<TObject>(string content)
         {
-            var serializer = new DataContractJsonSerializer(typeof(T), new DataContractJsonSerializerSettings { DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:ss") });
+            var serializer = new DataContractJsonSerializer(typeof(TObject), new DataContractJsonSerializerSettings { DateTimeFormat = new DateTimeFormat("yyyy-MM-ddTHH:mm:ss") });
             return (TObject)serializer.ReadObject(ConvertToStream(content));
         }
 

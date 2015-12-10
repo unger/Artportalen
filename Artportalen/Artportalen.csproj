@@ -34,13 +34,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Ap2ApiClient.cs" />
     <Compile Include="Ap2AuthManager.cs" />
     <Compile Include="Ap2Client.cs" />
     <Compile Include="Ap2SightingsService.cs" />
+    <Compile Include="Ap2WebClient.cs" />
     <Compile Include="Helpers\AttributeCalculator.cs" />
     <Compile Include="Helpers\AuthTokenRepository.cs" />
+    <Compile Include="Helpers\BasicAuthHelper.cs" />
     <Compile Include="Helpers\IAuthTokenRepository.cs" />
+    <Compile Include="Helpers\IJsonConverter.cs" />
+    <Compile Include="Helpers\JsonConverter.cs" />
+    <Compile Include="Helpers\QueryStringBuilder.cs" />
+    <Compile Include="Helpers\RegexHelper.cs" />
     <Compile Include="Model\ActivityEnum.cs" />
+    <Compile Include="Model\AreaDatasetEnum.cs" />
     <Compile Include="Model\GenderEnum.cs" />
     <Compile Include="Model\MunicipalityFeatureEnum.cs" />
     <Compile Include="Model\ProvinceEnum.cs" />
@@ -54,6 +62,7 @@
     <Compile Include="Request\PostSightingRequest.cs" />
     <Compile Include="Request\SightingsQuery.cs" />
     <Compile Include="Request\SitesQuery.cs" />
+    <Compile Include="Request\Web\SiteRequest.cs" />
     <Compile Include="Response\Accuracy.cs" />
     <Compile Include="Response\Activity.cs" />
     <Compile Include="Response\Area.cs" />
@@ -77,6 +86,18 @@
     <Compile Include="Response\Stage.cs" />
     <Compile Include="Response\Taxon.cs" />
     <Compile Include="Response\Unit.cs" />
+    <Compile Include="Response\Web\SiteGeoJsonResponse.cs" />
+    <Compile Include="Response\Web\SiteResponse.cs" />
+    <Compile Include="Response\Web\SiteTypeEnum.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.3.41352, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>E:\temp\ArtportalenTest\packages\AngleSharp.0.9.3\lib\portable-windows8+net45+windowsphone8+wpa\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

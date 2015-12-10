@@ -12,6 +12,8 @@ namespace Artportalen
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
     using System.Text;
+
+    using Artportalen.Helpers;
     using Artportalen.Request;
     using Artportalen.Response;
 
@@ -94,7 +96,7 @@ namespace Artportalen
 
         public AuthorizeToken Authorize(string user, string password)
         {
-            var basicAuthToken = Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", user, password)));
+            var basicAuthToken = BasicAuthHelper.Encode(user, password);
             return this.Authorize(basicAuthToken);
         }
 
@@ -205,7 +207,7 @@ namespace Artportalen
 
         public Sighting VerifySighting(string validationId, AuthorizeToken authToken)
         {
-            return this.VerifySighting(new Uri("https://www.artportalen.se/api/sightings/status/" + validationId), authToken);
+            return this.VerifySighting(new Uri(String.Format("{0}sightings/status/{1}", this.baseAddress, validationId)), authToken);
         }
 
         public Sighting VerifySighting(Uri url, AuthorizeToken authToken)

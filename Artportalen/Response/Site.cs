@@ -10,11 +10,11 @@
 
         public object ExternalId { get; set; }
 
-        public float XCoord { get; set; }
+        public double XCoord { get; set; }
 
-        public float YCoord { get; set; }
+        public double YCoord { get; set; }
 
-        public float Distance { get; set; }
+        public double Distance { get; set; }
 
         public BaseCollection<Area> Areas { get; set; }
     }

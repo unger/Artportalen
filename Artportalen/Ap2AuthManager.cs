@@ -17,16 +17,14 @@
         private readonly IAuthTokenRepository authTokenRepository;
 
         public Ap2AuthManager(string userName, string password, Ap2Client ap2Client, IAuthTokenRepository authTokenRepository = null)
-            : this(Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format("{0}:{1}", userName, password))), ap2Client, authTokenRepository)
+            : this(BasicAuthHelper.Encode(userName, password), ap2Client, authTokenRepository)
         {
         }
 
         public Ap2AuthManager(string basicAuthToken, Ap2Client ap2Client, IAuthTokenRepository authTokenRepository = null)
         {
             this.basicAuthToken = basicAuthToken;
-            var bytes = Convert.FromBase64String(basicAuthToken);
-            var unencoded = Encoding.UTF8.GetString(bytes, 0, bytes.Length);
-            this.userName = unencoded.Split(':')[0];
+            this.userName = BasicAuthHelper.Decode(basicAuthToken).UserName;
             this.ap2Client = ap2Client;
             this.authTokenRepository = authTokenRepository ?? new AuthTokenRepository();
         }
