@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SwedishCoordinates;
+using SwedishCoordinates.Classes;
+using SwedishCoordinates.Positions;
 
 namespace Artportalen
 {
@@ -84,14 +87,19 @@ namespace Artportalen
             return this.IsAuthorized();
         }
 
-        public async Task<IList<SiteResponse>> GetSitesWithinRadiusAsync(SiteRequest query)
+        private string GetBboxString(WebMercatorPosition southWest, WebMercatorPosition northEast)
         {
-            var east1 = (query.East - query.Radius).ToString(CultureInfo.InvariantCulture);
-            var east2 = (query.East + query.Radius).ToString(CultureInfo.InvariantCulture);
-            var north1 = (query.North - query.Radius).ToString(CultureInfo.InvariantCulture);
-            var north2 = (query.North + query.Radius).ToString(CultureInfo.InvariantCulture);
+            var southWestLng = southWest.Longitude.ToString(CultureInfo.InvariantCulture);
+            var northEastLng = northEast.Longitude.ToString(CultureInfo.InvariantCulture);
+            var southWestLat = southWest.Latitude.ToString(CultureInfo.InvariantCulture);
+            var northEastLat = northEast.Latitude.ToString(CultureInfo.InvariantCulture);
 
-            var bbox = string.Join(",", east1, north1, east2, north2);
+            return string.Join(",", southWestLng, northEastLng, southWestLat, northEastLat);
+        }
+
+        public async Task<IList<SiteResponse>> GetSitesWithinBoundsAsync(Position southWest, Position northEast)
+        {
+            var bbox = GetBboxString(southWest.ToWebMercator(), northEast.ToWebMercator());
 
             var request = new HttpRequestMessage(HttpMethod.Get, "/Site/Site");
             var response = await this.httpClient.SendAsync(request);

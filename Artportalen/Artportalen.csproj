@@ -95,6 +95,10 @@
       <HintPath>..\packages\AngleSharp.0.9.3\lib\portable-windows8+net45+windowsphone8+wpa\AngleSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SwedishCoordinates, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SwedishCoordinates.0.1.10.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\SwedishCoordinates.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
