@@ -92,7 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.9.3.41352, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
-      <HintPath>E:\temp\ArtportalenTest\packages\AngleSharp.0.9.3\lib\portable-windows8+net45+windowsphone8+wpa\AngleSharp.dll</HintPath>
+      <HintPath>..\packages\AngleSharp.0.9.3\lib\portable-windows8+net45+windowsphone8+wpa\AngleSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
