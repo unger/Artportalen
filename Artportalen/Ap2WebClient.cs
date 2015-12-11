@@ -16,7 +16,6 @@ namespace Artportalen
     using AngleSharp.Parser.Html;
 
     using Artportalen.Helpers;
-    using Artportalen.Request.Web;
     using Artportalen.Response.Web;
 
     public class Ap2WebClient
