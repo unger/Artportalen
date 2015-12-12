@@ -21,7 +21,7 @@ namespace Artportalen
     public class Ap2WebClient
     {
         private readonly HttpClient httpClient;
-        private readonly CookieContainer cookies = new CookieContainer();
+        private HttpClientHandler httpClientHandler;
 
         private NetworkCredential credential;
 
@@ -31,15 +31,15 @@ namespace Artportalen
 
         public Ap2WebClient(HttpClientHandler handler = null)
         {
-            var messageHandler = handler ?? new HttpClientHandler();
+            this.httpClientHandler = handler ?? new HttpClientHandler();
 
-            if (messageHandler.CookieContainer == null)
+            if (this.httpClientHandler.CookieContainer == null)
             {
-                messageHandler.CookieContainer = this.cookies;
-                messageHandler.UseCookies = true;
+                this.httpClientHandler.CookieContainer = new CookieContainer();
+                this.httpClientHandler.UseCookies = true;
             }
 
-            this.httpClient = new HttpClient(messageHandler)
+            this.httpClient = new HttpClient(this.httpClientHandler)
                                   {
                                       BaseAddress = new Uri(this.baseAddress)
                                   };
@@ -57,12 +57,10 @@ namespace Artportalen
             }
         }
 
-        public IReadOnlyCollection<Cookie> Cookies
+        public CookieContainer Cookies
         {
-            get
-            {
-                return new ReadOnlyCollection<Cookie>(this.cookies.GetCookies(new Uri(this.baseAddress)).Cast<Cookie>().ToList());
-            }
+            get { return httpClientHandler.CookieContainer; }
+            set { httpClientHandler.CookieContainer = value; }
         }
 
         public void SetCredentials(string username, string password)
@@ -93,7 +91,7 @@ namespace Artportalen
             var southWestLat = southWest.Latitude.ToString(CultureInfo.InvariantCulture);
             var northEastLat = northEast.Latitude.ToString(CultureInfo.InvariantCulture);
 
-            return string.Join(",", southWestLng, northEastLng, southWestLat, northEastLat);
+            return string.Join(",", southWestLng, southWestLat, northEastLng, northEastLat);
         }
 
         public async Task<IList<SiteResponse>> GetSitesWithinBoundsAsync(Position southWest, Position northEast)
@@ -208,7 +206,7 @@ namespace Artportalen
 
         private bool IsAuthorized()
         {
-            IEnumerable<Cookie> responseCookies = this.cookies.GetCookies(new Uri(this.baseAddress)).Cast<Cookie>();
+            IEnumerable<Cookie> responseCookies = this.Cookies.GetCookies(new Uri(this.baseAddress)).Cast<Cookie>();
             return responseCookies.Any(cookie => cookie.Name == ".ASPXAUTH");
         }
     }
