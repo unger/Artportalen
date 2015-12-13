@@ -128,9 +128,13 @@ namespace Artportalen
 
                 var siteResponse = await this.httpClient.SendAsync(request);
 
-                var responseStream = await siteResponse.Content.ReadAsStreamAsync();
-                var jsonSites = this.JsonConverter.Deserialize<SiteGeoJsonResponse>(responseStream);
+                if (siteResponse.Content.Headers.ContentLength == 0)
+                {
+                    return new List<SiteResponse>();
+                }
 
+                var responseStream = await siteResponse.Content.ReadAsStreamAsync();
+                var jsonSites = this.JsonConverter.Deserialize<SiteGeoJsonResponse>(responseString);
                 return this.ConvertToSites(jsonSites);
             }
 
