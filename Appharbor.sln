@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artportalen.Tests", "Artportalen.Tests\Artportalen.Tests.csproj", "{EAA23325-5726-4746-B5D5-8BCA498AFCCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artportalen.Sample", "Artportalen.Sample\Artportalen.Sample.csproj", "{7D0C0145-86FA-4DFB-A1EA-5F5C301C5149}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Artportalen", "Artportalen\Artportalen.csproj", "{5EA36212-2234-445C-823D-6B5385D7A8AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{9031EE33-2C90-49F3-966A-1AD25615EC1A}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EAA23325-5726-4746-B5D5-8BCA498AFCCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D0C0145-86FA-4DFB-A1EA-5F5C301C5149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D0C0145-86FA-4DFB-A1EA-5F5C301C5149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D0C0145-86FA-4DFB-A1EA-5F5C301C5149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D0C0145-86FA-4DFB-A1EA-5F5C301C5149}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA36212-2234-445C-823D-6B5385D7A8AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA36212-2234-445C-823D-6B5385D7A8AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA36212-2234-445C-823D-6B5385D7A8AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA36212-2234-445C-823D-6B5385D7A8AE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
