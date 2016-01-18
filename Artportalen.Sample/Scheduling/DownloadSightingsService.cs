@@ -98,14 +98,16 @@ namespace Artportalen.Sample.Scheduling
 
         private SightingsResponse HandleSightings(SightingsResponse lastResponse, Ap2SightingsService ap2SightingsService, SendSightingsService sendSightingsService, bool onlyLatest)
         {
+            bool useYesterday = DateTime.Now.Hour < 5;
             HttpResponseMessage sendResponse = null;
             var stopwatch = new Stopwatch();
-
             stopwatch.Start();
             var result = lastResponse == null
                 ? onlyLatest 
                     ? ap2SightingsService.GetLastThreeDaysSightings(TaxonGroupEnum.Fåglar, lastSightingId)
-                    : ap2SightingsService.GetTodaysSightings(TaxonGroupEnum.Fåglar)
+                    : useYesterday
+                        ? ap2SightingsService.GetYesterdaysSightings(TaxonGroupEnum.Fåglar)
+                        : ap2SightingsService.GetTodaysSightings(TaxonGroupEnum.Fåglar)
                 : ap2SightingsService.GetNextPage(lastResponse);
             stopwatch.Stop();
             if (result.Data.Length > 0)
